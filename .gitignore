@@ -1,0 +1,14 @@
+node_modules
+
+## 打包文件
+cjs/
+es/
+lib/
+
+out/
+
+testOut/
+
+/types/
+
+package-lock.json

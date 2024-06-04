@@ -1,0 +1,53 @@
+{
+  "name": "is-node-tools",
+  "version": "0.0.0",
+  "description": "some about node",
+  "type": "module",
+  "main": "out/index.cjs",
+  "module": "out/index.mjs",
+  "typings": "types/index.d.ts",
+  "scripts": {
+    "b": "rollup --config  rollup.config.js    && tsc -p  tsconfig.types.json",
+    "build": "npx ismi r  out  types  &&  npm run b",
+    "clean": "npx ismi u -d && npx ismi r  node_modules package-lock.json && npm install && npm  run build",
+    "test": "npx ismi r testOut  && rollup --config  rollup.config.test.js &&  node  test/out/test/index.mjs",
+    "up": "npx ismi u  -n"
+  },
+  "files": [
+    "out",
+    "types"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lmssee/node-tools.git"
+  },
+  "author": "lmssee <lmssee@outlook.com>  (https://lmssee.github.io)",
+  "license": "ISC",
+  "keywords": [
+    "lmssee",
+    "lmssee-node-tools",
+    "node-tools"
+  ],
+  "homepage": "https://lmssee.github.io/node-tools",
+  "bugs": {
+    "url": "https://github.com/lmssee/node-tools/issues",
+    "email": "lmssee@outlook.com"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.8",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "@types/node": "^20.14.0",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "is-tools": "^0.0.0"
+  }
+}

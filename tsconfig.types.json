@@ -1,0 +1,16 @@
+/**  该文件打包前使用  */
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "declarationDir": "types/"
+    // "types": ["node"],
+  },
+  "exclude": [
+    "node_modules",
+    "types",
+    "test",
+    "jest.config.ts"
+  ]
+}
