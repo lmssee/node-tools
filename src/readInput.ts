@@ -1,4 +1,4 @@
-import { typeOf } from "is-tools";
+import { typeOf } from "ismi-js-tools";
 import { createInterface } from "node:readline";
 
 const { stdin, stdout } = process;

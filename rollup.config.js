@@ -26,7 +26,7 @@ export default {
     },
   ],
   // 配置需要排除的包
-  external: (id) => /^(node:)|^(tslib)|^(is-tools)/.test(id),
+  external: (id) => /^(node:)|^(tslib)|^(ismi-js-tools)/.test(id),
   plugins: [
     resolve(),
     commonjs(),
