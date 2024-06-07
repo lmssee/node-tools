@@ -1,5 +1,5 @@
 import { exec } from "node:child_process";
-import { typeOf } from "is-tools";
+import { typeOf } from "ismi-js-tools";
 import { lmssee } from "./lmssee";
 import https from "node:https";
 /** Parameter types for `runOtherCode`
@@ -31,7 +31,7 @@ type RunOtherCodeParam =
  * The exec of `child_process` used here creates a child thread
  *  这里使用的  `child_process` 的 exec 创建子线程
  *   ```js
- *          import { runOtherCode } from  "is-node-tools";
+ *          import { runOtherCode } from  "ismi-node-tools";
  *          runOtherCode({
  *                  code:"ls",
  *                  pwd : "../",
@@ -84,7 +84,7 @@ function runOtherCode(
           () =>
             callBack &&
             typeOf(callBack) == "function" &&
-            (callBack as any).call(null),
+            Reflect.apply(callBack, null, []),
           resolve({ error: stderr, data: stdout, success: true }),
           100
         );
@@ -139,7 +139,7 @@ async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
     const npmPackageIsExit = await testNpmPackageExist(pkgName);
     if (!npmPackageIsExit) return reject({});
     const req = https.get(
-      `https://www.npmjs.com/search/suggestions?q=${pkgName || "is-node-tools"
+      `https://www.npmjs.com/search/suggestions?q=${pkgName || "ismi-node-tools"
       }`,
       (response) => {
         response.on("data", (data) => (result += data.toString()));

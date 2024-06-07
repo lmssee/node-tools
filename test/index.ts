@@ -12,7 +12,9 @@ import {
   testNpmPackageExist,
 } from "../index";
 import assert from "node:assert";
-
+import testReadInput from "./testReadInput";
+// 测试 read input 部分 
+testReadInput;
 /** 测试  get  */
 test.skip("test", async (t) => {
   const result = await get("132");

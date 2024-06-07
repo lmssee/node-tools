@@ -1,4 +1,4 @@
-# is-node-tools
+# is-mi-node-tools
 
 A purely functional tool that includes
 
@@ -14,7 +14,7 @@ A purely functional tool that includes
 ## install
 
 ```sh
-npm install   is-node-tools  --save
+npm install   ismi-node-tools  --save
 ```
 
 ## file
@@ -57,7 +57,7 @@ You can use cursor to manipulate the cursor position:
 ## A function waiting for user input. Because it needs to wait, it is asynchronous, and when using it, `wait` should be used
 
 ```js
-import { readInput } from "is-node-tools";
+import { readInput } from "ismi-node-tools";
 
 const callBackFunction = (keyValue: string | undefined, key: any) => {
   if (key.name && key.name == "return") return true;
@@ -98,7 +98,7 @@ The string color value of the terminal (meaning it cannot be used in a browser e
 ### use Color
 
 ```ts
-import { Color } from "is-node-tools";
+import { Color } from "ismi-node-tools";
 
 const { stdout } = process;
 

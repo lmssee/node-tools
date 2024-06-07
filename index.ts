@@ -7,7 +7,7 @@ export {
   isWindows,
   getCallerFileInfo,
 } from "./src/path";
-export { readInput } from "./src/readInput";
+export { readInput } from "./src/readInput/readInput";
 export { Color } from "./src/color";
 export {
   runOtherCode,

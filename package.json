@@ -1,6 +1,6 @@
 {
-  "name": "is-node-tools",
-  "version": "0.0.0",
+  "name": "ismi-node-tools",
+  "version": "0.0.1",
   "description": "some about node",
   "type": "module",
   "main": "out/index.cjs",
@@ -8,10 +8,11 @@
   "typings": "types/index.d.ts",
   "scripts": {
     "b": "rollup --config  rollup.config.js    && tsc -p  tsconfig.types.json",
-    "build": "npx ismi r  out  types  &&  npm run b",
-    "clean": "npx ismi u -d && npx ismi r  node_modules package-lock.json && npm install && npm  run build",
-    "test": "npx ismi r testOut  && rollup --config  rollup.config.test.js &&  node  test/out/test/index.mjs",
-    "up": "npx ismi u  -n"
+    "build": "npx ixxx r  out  types  &&  npm run b",
+    "clean": "npx ixxx u -d  r  node_modules package-lock.json && npm install && npm  run build",
+    "diff": "npx ixxx package diff",
+    "test": "n px ixxx  cls  &&  rollup --config  rollup.config.test.js &&  node  test/out/test/index.mjs",
+    "up": "npx ixxx u  -n"
   },
   "files": [
     "out",
@@ -25,8 +26,11 @@
   "license": "ISC",
   "keywords": [
     "lmssee",
-    "lmssee-node-tools",
-    "node-tools"
+    "letmiseesee",
+    "ismi",
+    "is-mi",
+    "node-tools",
+    "is-mi-node-tools"
   ],
   "homepage": "https://lmssee.github.io/node-tools",
   "bugs": {
@@ -48,6 +52,6 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "is-tools": "^0.0.0"
+    "ismi-js-tools": "^0.0.0"
   }
 }

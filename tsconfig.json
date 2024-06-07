@@ -4,8 +4,7 @@
     "index.ts",
     "src/**/*.ts",
     "**.d.ts",
-    "test/**/*.ts",
-    "test.ts"
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules"
