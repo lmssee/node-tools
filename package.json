@@ -1,23 +1,29 @@
 {
-  "name": "ismi-node-tools",
-  "version": "0.0.1",
-  "description": "some about node",
   "type": "module",
+  "version": "0.0.2",
   "main": "out/index.cjs",
+  "name": "ismi-node-tools",
   "module": "out/index.mjs",
   "typings": "types/index.d.ts",
+  "description": "some about node",
+  "files": [
+    "exportMjs/",
+    "exportCjs/",
+    "exportTypes/"
+  ],
+  "exports": {
+    "import": "./exportMjs/index.mjs",
+    "require": "./exportCjs/index.cjs",
+    "types": "./exportTypes/index.d.ts"
+  },
   "scripts": {
-    "b": "rollup --config  rollup.config.js    && tsc -p  tsconfig.types.json",
-    "build": "npx ixxx r  out  types  &&  npm run b",
-    "clean": "npx ixxx u -d  r  node_modules package-lock.json && npm install && npm  run build",
+    "b": "rollup --config rollup.config.js && tsc -p tsconfig.types.json",
+    "build": "npx ixxx r out types run b",
+    "clean": "npx ixxx u -d r node_modules exportMjs exportCjs exportTypes run npm install run b",
     "diff": "npx ixxx package diff",
-    "test": "n px ixxx  cls  &&  rollup --config  rollup.config.test.js &&  node  test/out/test/index.mjs",
+    "test": " rollup --config rollup.config.test.js && node test/out/test/index.mjs",
     "up": "npx ixxx u  -n"
   },
-  "files": [
-    "out",
-    "types"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/lmssee/node-tools.git"
@@ -25,10 +31,10 @@
   "author": "lmssee <lmssee@outlook.com>  (https://lmssee.github.io)",
   "license": "ISC",
   "keywords": [
-    "lmssee",
     "letmiseesee",
-    "ismi",
+    "lmssee",
     "is-mi",
+    "ismi",
     "node-tools",
     "is-mi-node-tools"
   ],
@@ -42,16 +48,16 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^25.0.8",
-    "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.14.0",
+    "@rollup/plugin-commonjs": "^25.0.8",
     "rollup-plugin-cleanup": "^3.2.1",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-json": "^6.1.0",
+    "@types/node": "^20.14.2",
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "ismi-js-tools": "^0.0.0"
+    "ismi-js-tools": "^0.0.2"
   }
 }

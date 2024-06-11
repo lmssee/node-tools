@@ -13,45 +13,26 @@ import {
 } from "../index";
 import assert from "node:assert";
 import testReadInput from "./testReadInput";
+import testColor from './testColor';
+import testCursor from './testCursor';
+import testPath from './testPath';
+import testNode from "./testNode";
+
+// 测试 node 相关
+testNode();
+// 测试文件路径
+testPath();
+// 测试 Color 部分
+testColor();
 // 测试 read input 部分 
-testReadInput;
+testReadInput();
+// 测试 cursor 光标部分
+testCursor();
+
+
 /** 测试  get  */
 test.skip("test", async (t) => {
   const result = await get("132");
   assert.strictEqual(result, true);
 });
 
-test('testNpmPkgExist', async (t) => {
-  const result = await testNpmPackageExist('is-tools');
-  assert.equal(result, true);
-});
-
-/** 测试从 npm 管理后台获取包信息 */
-test("testGetNpmPkgInfo", async (t) => {
-  const name = "is-tools";
-  const result: any = await getNpmPkgInfo(name);
-  assert.deepStrictEqual(result[0].name, name);
-});
-
-/** 测试地址拼接 */
-test.skip("path-join", (t) => {
-  const cwd = process.cwd();
-  const result = pathJoin(cwd, "../");
-  assert.notEqual(result, cwd);
-});
-
-/** 测试初始化 __filename */
-test.skip("initializeFile", (t) => {
-  const [__filename, __dirname] = initializeFile();
-  console.log(__filename);
-  console.log(__dirname);
-});
-
-/** 测试运行其他代码 */
-test.skip("runOtherCOde", async (t) => {
-  const result = await runOtherCode({
-    code: isWindows ? "dir" : "ls",
-    cwd: "./",
-  });
-  assert.notEqual(result.success, false);
-});

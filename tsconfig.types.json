@@ -4,13 +4,8 @@
   "compilerOptions": {
     "emitDeclarationOnly": true,
     "declaration": true,
-    "declarationDir": "types/"
+    "declarationDir": "exportTypes/"
     // "types": ["node"],
   },
-  "exclude": [
-    "node_modules",
-    "types",
-    "test",
-    "jest.config.ts"
-  ]
+  "exclude": ["node_modules", "exportTypes/", "test"]
 }

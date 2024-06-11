@@ -14,7 +14,7 @@ export default {
       preserveModules: true,
       sourcemap: false,
       exports: "named",
-      dir: "out",
+      dir: "exportMjs",
     },
     {
       format: "cjs",
@@ -22,11 +22,11 @@ export default {
       preserveModules: true,
       sourcemap: false,
       exports: "named",
-      dir: "out",
+      dir: "exportCjs",
     },
   ],
   // 配置需要排除的包
-  external: (id) => /^(node:)|^(tslib)|^(ismi-js-tools)/.test(id),
+  external: (id) => /^(node:)|^(tslib)|^(ismi)/.test(id),
   plugins: [
     resolve(),
     commonjs(),
