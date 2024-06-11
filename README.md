@@ -36,6 +36,7 @@ npm install   ismi-node-tools  --save
 - `initializeFile` Initialize the paths `__filename` and `__dirname` , as they can only be used in the `cjs` file. They are initialized here and are compatible
 - `getCallerFilename` Get the file that calls the function
 - `isWindows` Is it currently in a Windows environment, used to address the differences caused by different time separators when using 'path'
+- - `getDirectoryBy` Find the parent directory of the target based on its file or file name
 
 ### cursor section
 

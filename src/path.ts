@@ -10,18 +10,19 @@ import {
   normalize,
   sep,
 } from "node:path";
+import { fileExist } from "./file";
 
 /**
  * 判断当前是否为 windows 环境
  *
  *  https://nodejs.org/docs/latest/api/path.html  */
-const isWindows: Boolean = process.platform == "win32";
+export const isWindows: Boolean = process.platform == "win32";
 
 /** file name
  *
  * 获取文件名
  */
-function pathBasename(filename: string) {
+export function pathBasename(filename: string) {
   return (isWindows ? win32 : posix).basename(filename);
 }
 
@@ -30,7 +31,7 @@ function pathBasename(filename: string) {
  *
  * 路径拼接
  */
-function pathJoin(..._path: string[]) {
+export function pathJoin(..._path: string[]) {
   return normalize(join(..._path));
 }
 
@@ -38,7 +39,7 @@ function pathJoin(..._path: string[]) {
  *
  * 获取文件的目录名称
  */
-function pathDirname(path: string) {
+export function pathDirname(path: string) {
   return dirname(path);
 }
 
@@ -50,7 +51,7 @@ function pathDirname(path: string) {
  * @returns { name:string, line:number,row:"" ,originArr:string[]}
  *
  */
-function getCallerFileInfo(fileName: string): {
+export function getCallerFileInfo(fileName: string): {
   name: string;
   line: number;
   row: number;
@@ -111,7 +112,7 @@ function getCallerFileInfo(fileName: string): {
  *
  *  @param fileName 请调用时传入函数 __filename
  */
-function getCallerFilename(fileName: string) {
+export function getCallerFilename(fileName: string) {
   return getCallerFileInfo(fileName).name;
 }
 
@@ -121,7 +122,7 @@ function getCallerFilename(fileName: string) {
  *
  * @return {*}  [__filename,__dirname]
  */
-function initializeFile(): any {
+export function initializeFile(): any {
   /** 文件地址  */
   let a,
     /** 文件躲在目录地址  */
@@ -138,15 +139,46 @@ function initializeFile(): any {
   return [a, b];
 }
 
-export {
-  pathJoin,
-  pathBasename,
-  pathDirname,
-  initializeFile,
-  isWindows,
-  getCallerFilename,
-  getCallerFileInfo,
-};
+/** 根据给定的文件或文件夹名称找到父级目录 
+ *  
+ * ```ts
+ *  
+ * const result = getDirectoryBy('package.json'); 
+ * 
+ * // 倘若 package.json 文件为兄弟目录
+ * 
+ * console.log(result); // process.cwd();
+ * 
+ * // 倘若当前文件链并不会存在 package.json 则
+ * 
+ * console.log(result); // undefined
+ * 
+ * ```
+ * @param target  目标文件或文件夹
+ * @param type 当前设定目标的类型：文件 `file` 或是文件夹 `directory`
+ * @param [originalPath='']  查找的原始路径
+ * 
+ * @returns 在捕获到目标后会返回目标，否则则返回 undefined
+*/
+export function getDirectoryBy(target: string, type: "file" | "directory" = 'file', originalPath: string = ''): string | undefined {
+  // 当前工作目录
+  let cwd: string = originalPath || process.cwd();
+  // 查看当前工作目录是否存在
+  const cwdIsExist = fileExist(cwd);
+  // 倘若 cwd 不存在（只要针对于传入参数的情况）
+  if (!cwdIsExist) return "";
+  if (cwdIsExist.isFile()) cwd = pathDirname(cwd);
+  else if (!cwdIsExist.isDirectory()) return "";
+  do {
+    // 目标文件
+    let fileTest = fileExist(pathJoin(cwd, target));
+    // 判断文件
+    if (fileTest && (type == 'file' && fileTest.isFile() || type == 'directory' && fileTest.isDirectory())) return cwd;
+    cwd = pathJoin(cwd, '..');
+  } while (cwd !== pathJoin(cwd, '..'));
+  return "";
+}
+
 
 /**
  *
@@ -176,4 +208,6 @@ export default {
   getCallerFileInfo,
   /** 获取调用该函数文件  */
   getCallerFilename,
+  /** 根据给定的目标查找存在该文件的目录 */
+  getDirectoryBy,
 };
