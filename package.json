@@ -1,24 +1,31 @@
 {
   "type": "module",
-  "version": "0.0.2",
-  "main": "out/index.cjs",
+  "version": "0.0.3",
   "name": "ismi-node-tools",
-  "module": "out/index.mjs",
-  "typings": "types/index.d.ts",
+  "main": "exportCjs/index.cjs",
+  "module": "exportMjs/index.mjs",
   "description": "some about node",
+  "typings": "exportTypes/index.d.ts",
   "files": [
     "exportMjs/",
     "exportCjs/",
     "exportTypes/"
   ],
   "exports": {
-    "import": "./exportMjs/index.mjs",
-    "require": "./exportCjs/index.cjs",
-    "types": "./exportTypes/index.d.ts"
+    ".": {
+      "import": {
+        "types": "./exportTypes/index.d.ts",
+        "default": "./exportMjs/index.mjs"
+      },
+      "require": {
+        "default": "./exportCjs/index.cjs",
+        "types": "./exportTypes/index.d.ts"
+      }
+    }
   },
   "scripts": {
     "b": "rollup --config rollup.config.js && tsc -p tsconfig.types.json",
-    "build": "npx ixxx r out types run b",
+    "build": "npx ixxx r exportMjs exportCjs exportTypes run b",
     "clean": "npx ixxx u -d r node_modules exportMjs exportCjs exportTypes run npm install run b",
     "diff": "npx ixxx package diff",
     "test": " rollup --config rollup.config.test.js && node test/out/test/index.mjs",
