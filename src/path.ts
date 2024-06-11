@@ -16,13 +16,13 @@ import { fileExist } from "./file";
  * 判断当前是否为 windows 环境
  *
  *  https://nodejs.org/docs/latest/api/path.html  */
-export const isWindows: Boolean = process.platform == "win32";
+const isWindows: Boolean = process.platform == "win32";
 
 /** file name
  *
  * 获取文件名
  */
-export function pathBasename(filename: string) {
+function pathBasename(filename: string) {
   return (isWindows ? win32 : posix).basename(filename);
 }
 
@@ -31,7 +31,7 @@ export function pathBasename(filename: string) {
  *
  * 路径拼接
  */
-export function pathJoin(..._path: string[]) {
+function pathJoin(..._path: string[]) {
   return normalize(join(..._path));
 }
 
@@ -39,7 +39,7 @@ export function pathJoin(..._path: string[]) {
  *
  * 获取文件的目录名称
  */
-export function pathDirname(path: string) {
+function pathDirname(path: string) {
   return dirname(path);
 }
 
@@ -51,7 +51,7 @@ export function pathDirname(path: string) {
  * @returns { name:string, line:number,row:"" ,originArr:string[]}
  *
  */
-export function getCallerFileInfo(fileName: string): {
+function getCallerFileInfo(fileName: string): {
   name: string;
   line: number;
   row: number;
@@ -112,7 +112,7 @@ export function getCallerFileInfo(fileName: string): {
  *
  *  @param fileName 请调用时传入函数 __filename
  */
-export function getCallerFilename(fileName: string) {
+function getCallerFilename(fileName: string) {
   return getCallerFileInfo(fileName).name;
 }
 
@@ -122,7 +122,7 @@ export function getCallerFilename(fileName: string) {
  *
  * @return {*}  [__filename,__dirname]
  */
-export function initializeFile(): any {
+function initializeFile(): any {
   /** 文件地址  */
   let a,
     /** 文件躲在目录地址  */
@@ -160,7 +160,7 @@ export function initializeFile(): any {
  * 
  * @returns 在捕获到目标后会返回目标，否则则返回 undefined
 */
-export function getDirectoryBy(target: string, type: "file" | "directory" = 'file', originalPath: string = ''): string | undefined {
+function getDirectoryBy(target: string, type: "file" | "directory" = 'file', originalPath: string = ''): string | undefined {
   // 当前工作目录
   let cwd: string = originalPath || process.cwd();
   // 查看当前工作目录是否存在
@@ -179,6 +179,16 @@ export function getDirectoryBy(target: string, type: "file" | "directory" = 'fil
   return "";
 }
 
+export {
+  isWindows,
+  pathJoin,
+  pathBasename,
+  pathDirname,
+  getCallerFileInfo,
+  getCallerFilename,
+  initializeFile,
+  getDirectoryBy
+};
 
 /**
  *
