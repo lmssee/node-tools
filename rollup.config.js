@@ -34,7 +34,9 @@ export default {
     // terser(),
     // 可打包 json 内容
     json(),
-    typescript({}),
+    typescript({
+      exclude: ["node_modules", "test"],
+    }),
     // 去除无用代码
     cleanup(),
   ],

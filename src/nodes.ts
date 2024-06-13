@@ -8,22 +8,22 @@ import https from "node:https";
  */
 type RunOtherCodeParam =
   | {
-    /** The code to be executed
-     *
-     * 将要执行的代码
-     */
-    code: string;
-    /** Directory for executing code
-     *
-     * 执行代码的目录
-     */
-    cwd?: string | undefined;
-    /** Callback function
-     *
-     * 回调函数
-     */
-    callBack?: any;
-  }
+      /** The code to be executed
+       *
+       * 将要执行的代码
+       */
+      code: string;
+      /** Directory for executing code
+       *
+       * 执行代码的目录
+       */
+      cwd?: string | undefined;
+      /** Callback function
+       *
+       * 回调函数
+       */
+      callBack?: any;
+    }
   | string;
 
 /** Execute other commands
@@ -139,7 +139,8 @@ async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
     const npmPackageIsExit = await testNpmPackageExist(pkgName);
     if (!npmPackageIsExit) return reject({});
     const req = https.get(
-      `https://www.npmjs.com/search/suggestions?q=${pkgName || "ismi-node-tools"
+      `https://www.npmjs.com/search/suggestions?q=${
+        pkgName || "ismi-node-tools"
       }`,
       (response) => {
         response.on("data", (data) => (result += data.toString()));
@@ -159,8 +160,10 @@ async function testNpmPackageExist(pkgName: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     const req = https.get(
       `https://www.npmjs.com/package/${pkgName}`,
-      (response) => (response.on('data', () => 0),
-        response.on("end", () => resolve(response.statusCode == 200)))
+      (response) => (
+        response.on("data", () => 0),
+        response.on("end", () => resolve(response.statusCode == 200))
+      )
     );
     req.on("error", () => reject(undefined));
     req.end();
@@ -173,4 +176,4 @@ async function get(url: string): Promise<any> {
   });
 }
 
-export { runOtherCode, initLmssee, getNpmPkgInfo, testNpmPackageExist, get };
+export { runOtherCode, getNpmPkgInfo, testNpmPackageExist, RunOtherCodeParam };
