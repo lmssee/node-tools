@@ -139,15 +139,35 @@ async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
     const npmPackageIsExit = await testNpmPackageExist(pkgName);
     if (!npmPackageIsExit) return reject({});
     const req = https.get(
-      `https://www.npmjs.com/search/suggestions?q=${
-        pkgName || "ismi-node-tools"
-      }`,
+      `https://www.npmjs.com/package/${pkgName || "ismi-node-tools"}`,
+      {
+        headers: {
+          "sec-fetch-dest": "empty",
+          // "X-Requested-With": "XMLHttpRequest",
+          // "Sec-Fetch-Mode": "cors",
+          // "Sec-Fetch-Site": "same-origin",
+          // Accept: "*/*",
+          // Referer: `https://www.npmjs.com/package/${pkgName}`,
+          "X-Spiferack": 1,
+        },
+      },
       (response) => {
         response.on("data", (data) => (result += data.toString()));
-        response.on("end", () => resolve(JSON.parse(result)));
+        /// 请求结束后
+        response.on("end", () => {
+          if (response.statusCode == 200) {
+            const pkgInfo = JSON.parse(result);
+            const info = pkgInfo.packageVersion;
+            pkgInfo.name = info.name;
+            pkgInfo.version = info.version;
+            resolve(pkgInfo || {});
+          } else {
+            resolve({});
+          }
+        });
       }
     );
-    req.on("error", () => reject(false));
+    req.on("error", () => resolve({}));
     req.end();
   });
 }
