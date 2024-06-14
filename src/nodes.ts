@@ -1,7 +1,8 @@
-import { exec } from "node:child_process";
+import { spawn } from "node:child_process";
 import { typeOf } from "ismi-js-tools";
 import { lmssee } from "./lmssee";
 import https from "node:https";
+import { pathJoin } from "./path";
 /** Parameter types for `runOtherCode`
  *
  * 执行其他代码的参数类型
@@ -70,28 +71,56 @@ function runOtherCode(
   param: RunOtherCodeParam
 ): Promise<{ error: any; success?: boolean; data?: any }> {
   typeof param == "string" && (param = { code: param });
-  const { code, cwd, callBack } = Object.assign(
+  let { code, cwd, callBack } = Object.assign(
     {
-      pwd: "",
+      cwd: "",
     },
     param
   );
+  /// 整理工作路径
+  cwd = pathJoin(process.cwd(), cwd);
+  /** 解析命令 */
+  const commandLine = code
+    .replace(/\s{2,}/, " ")
+    .trim()
+    .split(" ");
+
   try {
     return new Promise((resolve: any, reject: any) => {
-      exec(code, { cwd }, (error: any, stdout: any, stderr: any) => {
-        error && resolve({ error, data: undefined, success: false }); // 如果出现异常
-        setTimeout(
-          () =>
-            callBack &&
-            typeOf(callBack) == "function" &&
-            Reflect.apply(callBack, null, []),
-          resolve({ error: stderr, data: stdout, success: true }),
-          100
-        );
+      let stdoutData = "",
+        stderrData = "",
+        success = true;
+      /** 子命令  */
+      const childProcess = spawn(commandLine[0], commandLine.slice(1), {
+        cwd,
+        shell: true,
+      });
+      /// 标准输出流
+      childProcess.stdout.on("data", (data) => {
+        const _data = data.toString();
+        console.log(_data);
+        stdoutData += _data;
+      });
+      /// 标准输出流输出错误
+      childProcess.stderr.on("data", (error) => console.log(error.toString()));
+      /// 出现错误
+      childProcess.on(
+        "error",
+        (error) => ((success = !1), console.log(error.toString()))
+      );
+      /// 子进程关闭事件
+      childProcess.on("close", () => {
+        setTimeout(() => {
+          if (callBack && typeOf(callBack) == "function")
+            Reflect.apply(callBack, null, []);
+          resolve({ success, data: stdoutData, error: stderrData });
+        }, 100);
       });
     });
   } catch (error) {
-    return new Promise((resolve, _) =>
+    console.log("catch error", error);
+
+    return new Promise((resolve) =>
       resolve({ error, data: undefined, success: false })
     );
   }
