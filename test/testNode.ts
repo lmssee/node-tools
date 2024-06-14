@@ -20,11 +20,13 @@ test.skip("test get npm pkg info", async (t) => {
 });
 
 /** 测试运行其他代码 */
-test.skip("test run other code", async (t) => {
+test("test run other code", async (t) => {
   const result = await runOtherCode({
     code: isWindows ? "dir" : "ls",
     cwd: "./",
   });
+  console.log(result);
+
   assert.notEqual(result.success, false);
 });
 
