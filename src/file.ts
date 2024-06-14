@@ -12,8 +12,8 @@ function readFileToJson(fileDir: string) {
         !statSync(fileDir, { throwIfNoEntry: false }) &&
         reject({})) ||
       readFile(fileDir, { encoding: 'utf-8' })
-        .then((res) => resolve(JSON.parse(res)))
-        .catch(() => reject({}))
+        .then(res => resolve(JSON.parse(res)))
+        .catch(() => reject({})),
   );
 }
 /**

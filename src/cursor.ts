@@ -1,18 +1,18 @@
-import { createInterface } from "node:readline";
+import { createInterface } from 'node:readline';
 
-const t = "\x1b[",
+const t = '\x1b[',
   { stdout, stdin } = process;
 const _p = (r: string | number) => stdout.write(`${t}${r}`);
 /** Cursor is hidden at the terminal
  *
  * 光标在终端进行隐藏
  */
-const cursorHide = () => _p("?25l");
+const cursorHide = () => _p('?25l');
 /** Cursor display
  *
  * 光标进行显示
  */
-const cursorShow = () => _p("?25h");
+const cursorShow = () => _p('?25h');
 /** get cursor position
  *
  * 获取光标的位置 */
@@ -22,18 +22,18 @@ const cursorGetPosition = () => {
     output: stdout,
   });
   return new Promise((resolve: any, reject: any) => {
-    _p("6n");
+    _p('6n');
     const dataCall = (data: any) => {
       const match = data.toString().match(/^\x1b\[(\d+);(\d+)R$/i);
       if (match) {
         const [_, row, col] = match;
-        stdin.removeListener("data", dataCall);
+        stdin.removeListener('data', dataCall);
         rl.close();
         resolve([row, col]);
       }
       reject([0, 0]);
     };
-    stdin.on("data", dataCall);
+    stdin.on('data', dataCall);
   });
 };
 /** set cursor position

@@ -1,6 +1,6 @@
-import * as http from "node:http";
-import * as https from "node:https";
-import * as http2 from "node:http2";
+import * as http from 'node:http';
+import * as https from 'node:https';
+import * as http2 from 'node:http2';
 // const req = https.get(
 //   `https://www.npmjs.com/package/${pkgName || "ismi-node-tools"}`,
 //   {
@@ -25,7 +25,7 @@ import * as http2 from "node:http2";
 // );
 type GetType = {
   url: string;
-  method: "get" | "post";
+  method: 'get' | 'post';
 
   data: {};
 };
