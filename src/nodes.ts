@@ -1,8 +1,8 @@
-import { spawn } from "node:child_process";
-import { typeOf } from "ismi-js-tools";
-import { lmssee } from "./lmssee";
-import https from "node:https";
-import { pathJoin } from "./path";
+import { spawn } from 'node:child_process';
+import { typeOf } from 'ismi-js-tools';
+import { lmssee } from './lmssee';
+import https from 'node:https';
+import { pathJoin } from './path';
 /** Parameter types for `runOtherCode`
  *
  * 执行其他代码的参数类型
@@ -68,27 +68,27 @@ type RunOtherCodeParam =
  *
  */
 function runOtherCode(
-  param: RunOtherCodeParam
+  param: RunOtherCodeParam,
 ): Promise<{ error: any; success?: boolean; data?: any }> {
-  typeof param == "string" && (param = { code: param });
+  typeof param == 'string' && (param = { code: param });
   let { code, cwd, callBack } = Object.assign(
     {
-      cwd: "",
+      cwd: '',
     },
-    param
+    param,
   );
   /// 整理工作路径
   cwd = pathJoin(process.cwd(), cwd);
   /** 解析命令 */
   const commandLine = code
-    .replace(/\s{2,}/, " ")
+    .replace(/\s{2,}/, ' ')
     .trim()
-    .split(" ");
+    .split(' ');
 
   try {
     return new Promise((resolve: any, reject: any) => {
-      let stdoutData = "",
-        stderrData = "",
+      let stdoutData = '',
+        stderrData = '',
         success = true;
       /** 子命令  */
       const childProcess = spawn(commandLine[0], commandLine.slice(1), {
@@ -96,32 +96,34 @@ function runOtherCode(
         shell: true,
       });
       /// 标准输出流
-      childProcess.stdout.on("data", (data) => {
+      childProcess.stdout.on('data', data => {
         const _data = data.toString();
-        console.log(_data);
-        stdoutData += _data;
+        if (!/^\s*$/.test(_data)) {
+          console.log(_data);
+          stdoutData += _data;
+        }
       });
       /// 标准输出流输出错误
-      childProcess.stderr.on("data", (error) => console.log(error.toString()));
+      childProcess.stderr.on('data', error => console.log(error.toString()));
       /// 出现错误
       childProcess.on(
-        "error",
-        (error) => ((success = !1), console.log(error.toString()))
+        'error',
+        error => ((success = !1), console.log(error.toString())),
       );
       /// 子进程关闭事件
-      childProcess.on("close", () => {
+      childProcess.on('close', () => {
         setTimeout(() => {
-          if (callBack && typeOf(callBack) == "function")
+          if (callBack && typeOf(callBack) == 'function')
             Reflect.apply(callBack, null, []);
           resolve({ success, data: stdoutData, error: stderrData });
         }, 100);
       });
     });
   } catch (error) {
-    console.log("catch error", error);
+    console.log('catch error', error);
 
-    return new Promise((resolve) =>
-      resolve({ error, data: undefined, success: false })
+    return new Promise(resolve =>
+      resolve({ error, data: undefined, success: false }),
     );
   }
 }
@@ -135,14 +137,14 @@ function initLmssee(data?: any) {
   if (!globalThis) return;
   globalThis &&
     !(globalThis as any).lmssee &&
-    Object.defineProperty(globalThis, "lmssee", {
+    Object.defineProperty(globalThis, 'lmssee', {
       value: lmssee,
       writable: true,
       enumerable: true,
       configurable: false,
     });
   data &&
-    typeOf(data) == "object" &&
+    typeOf(data) == 'object' &&
     Object.keys(data).length == 1 &&
     !(lmssee as any)(Object.keys(data)[0]) &&
     Object.defineProperty(lmssee, Object.keys(data)[0], {
@@ -164,26 +166,26 @@ function initLmssee(data?: any) {
  */
 async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
   return new Promise(async (resolve: any, reject: any) => {
-    let result: any = "";
+    let result: any = '';
     const npmPackageIsExit = await testNpmPackageExist(pkgName);
     if (!npmPackageIsExit) return reject({});
     const req = https.get(
-      `https://www.npmjs.com/package/${pkgName || "ismi-node-tools"}`,
+      `https://www.npmjs.com/package/${pkgName || 'ismi-node-tools'}`,
       {
         headers: {
-          "sec-fetch-dest": "empty",
+          'sec-fetch-dest': 'empty',
           // "X-Requested-With": "XMLHttpRequest",
           // "Sec-Fetch-Mode": "cors",
           // "Sec-Fetch-Site": "same-origin",
           // Accept: "*/*",
           // Referer: `https://www.npmjs.com/package/${pkgName}`,
-          "X-Spiferack": 1,
+          'X-Spiferack': 1,
         },
       },
-      (response) => {
-        response.on("data", (data) => (result += data.toString()));
+      response => {
+        response.on('data', data => (result += data.toString()));
         /// 请求结束后
-        response.on("end", () => {
+        response.on('end', () => {
           if (response.statusCode == 200) {
             const pkgInfo = JSON.parse(result);
             const info = pkgInfo.packageVersion;
@@ -194,9 +196,9 @@ async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
             resolve({});
           }
         });
-      }
+      },
     );
-    req.on("error", () => resolve({}));
+    req.on('error', () => resolve({}));
     req.end();
   });
 }
@@ -209,12 +211,12 @@ async function testNpmPackageExist(pkgName: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
     const req = https.get(
       `https://www.npmjs.com/package/${pkgName}`,
-      (response) => (
-        response.on("data", () => 0),
-        response.on("end", () => resolve(response.statusCode == 200))
-      )
+      response => (
+        response.on('data', () => 0),
+        response.on('end', () => resolve(response.statusCode == 200))
+      ),
     );
-    req.on("error", () => reject(undefined));
+    req.on('error', () => reject(undefined));
     req.end();
   });
 }

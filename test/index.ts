@@ -1,10 +1,10 @@
-import { test, mock, describe, it } from "node:test";
-import assert from "node:assert";
-import testReadInput from "./testReadInput";
-import testColor from "./testColor";
-import testCursor from "./testCursor";
-import testPath from "./testPath";
-import testNode from "./testNode";
+import { test, mock, describe, it } from 'node:test';
+import assert from 'node:assert';
+import testReadInput from './testReadInput';
+import testColor from './testColor';
+import testCursor from './testCursor';
+import testPath from './testPath';
+import testNode from './testNode';
 
 // 测试 node 相关
 testNode();

@@ -1,4 +1,4 @@
-import { default as path } from "./src/path";
+import { default as path } from './src/path';
 export {
   isWindows,
   pathJoin,
@@ -8,15 +8,15 @@ export {
   getCallerFilename,
   initializeFile,
   getDirectoryBy,
-} from "./src/path";
-export { readInput } from "./src/readInput/readInput";
-export { Color } from "./src/color";
+} from './src/path';
+export { readInput } from './src/readInput/readInput';
+export { Color } from './src/color';
 export {
   runOtherCode,
   getNpmPkgInfo,
   testNpmPackageExist,
   RunOtherCodeParam,
-} from "./src/nodes";
+} from './src/nodes';
 export {
   t,
   cursorHide,
@@ -26,13 +26,13 @@ export {
   cursorMoveDown,
   cursorMoveLeft,
   cursorMoveRight,
-} from "./src/cursor.js";
+} from './src/cursor.js';
 
 export {
   readFileToJson,
   readFileToJsonSync,
   fileExist,
   writeJsonFile,
-} from "./src/file";
+} from './src/file';
 
 export { path };

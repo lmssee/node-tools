@@ -1,5 +1,5 @@
-import { t } from "./cursor";
-import { getRandomInt } from "ismi-js-tools";
+import { t } from './cursor';
+import { getRandomInt } from 'ismi-js-tools';
 
 /**
  * 这是一个颜色的定义区
@@ -16,7 +16,7 @@ export class Color {
   }
 
   concat(...strings: string[]): string {
-    if (strings.length == 0) return "";
+    if (strings.length == 0) return '';
     let str = this.valueOf();
     strings.forEach((currentString: string) => {
       str += currentString;
@@ -240,8 +240,8 @@ export class Color {
 /**  简单颜色 */
 function simpleColor(count: number, str: string): string {
   str = str.toString();
-  const hasColorStart = str.indexOf("\x1b[38;");
-  const hasColorEnd = str.indexOf("\x1b[m");
+  const hasColorStart = str.indexOf('\x1b[38;');
+  const hasColorEnd = str.indexOf('\x1b[m');
   if (hasColorStart > -1 && hasColorEnd > -1) {
     return simpleColor(count, str.substring(0, hasColorStart))
       .concat(str.substring(hasColorStart, hasColorEnd + 3))
@@ -266,7 +266,7 @@ function computedTerminalColor(color: string): number {
     return result > 6 ? 6 : result < 0 ? 0 : result;
   };
 
-  if (color.startsWith("#")) {
+  if (color.startsWith('#')) {
     color = color.slice(1);
     if (color.length == 6) {
       r = getColor(parseInt(color.slice(0, 2), 16));
@@ -277,8 +277,8 @@ function computedTerminalColor(color: string): number {
       g = getColor(parseInt(color.slice(1, 2).repeat(2), 16));
       b = getColor(parseInt(color.slice(2, 3).repeat(2), 16));
     } else return getRandomInt(255);
-  } else if (color.startsWith("rgb")) {
-    const colorArr = color.replace(/.*\((.*)\).*/, "$1").split(",");
+  } else if (color.startsWith('rgb')) {
+    const colorArr = color.replace(/.*\((.*)\).*/, '$1').split(',');
     r = getColor(Number(colorArr[0]));
     g = getColor(Number(colorArr[1]));
     b = getColor(Number(colorArr[2]));

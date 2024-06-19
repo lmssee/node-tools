@@ -1,4 +1,4 @@
-import { fileURLToPath } from "node:url";
+import { fileURLToPath } from 'node:url';
 import {
   win32,
   posix,
@@ -9,14 +9,14 @@ import {
   join,
   normalize,
   sep,
-} from "node:path";
-import { fileExist } from "./file";
+} from 'node:path';
+import { fileExist } from './file';
 
 /**
  * 判断当前是否为 windows 环境
  *
  *  https://nodejs.org/docs/latest/api/path.html  */
-const isWindows: Boolean = process.platform == "win32";
+const isWindows: Boolean = process.platform == 'win32';
 
 /** file name
  *
@@ -67,32 +67,32 @@ function getCallerFileInfo(fileName: string): {
     errorInfo = error;
   }
   const lines: string[] = (
-    errorInfo.stack.replace(/\\/gm, "/").split("\n") as string[]
+    errorInfo.stack.replace(/\\/gm, '/').split('\n') as string[]
   ).reverse();
   /** 查找结果 */
   let resultIndex: number = lines.findIndex(
     (currentEle: string, currentIndex: number, arr: string[]) =>
-      !regexp.test(currentEle) && regexp.test(arr[currentIndex + 1])
+      !regexp.test(currentEle) && regexp.test(arr[currentIndex + 1]),
   );
   /** 如果没找到 */
-  if (resultIndex == -1) return { name: "", line: 0, row: 0, originArr: lines };
+  if (resultIndex == -1) return { name: '', line: 0, row: 0, originArr: lines };
 
   let result = lines[resultIndex];
 
   // 去除结果行中的 （） 外部分
   if (/\(.*\)/.test(result)) {
-    result = result.replace(/^.*\((.*)\).*/, "$1");
+    result = result.replace(/^.*\((.*)\).*/, '$1');
   }
   /** 在 windows 环境去除 file：/// 前缀 */
   if (/file:\/*/) {
-    result = result.replace(/^.*file:\/*(.*)/, "$1");
+    result = result.replace(/^.*file:\/*(.*)/, '$1');
   }
   // 非 windows 桌面添加 /
-  !isWindows && !result.startsWith("/") && (result = "/" + result);
+  !isWindows && !result.startsWith('/') && (result = '/' + result);
   return {
-    name: result.replace(/^(.*):\d+:\d+$/, "$1"),
-    line: Number(result.replace(/^.*:(\d+):\d+$/, "$")),
-    row: Number(result.replace(/^.*:\d+:(\d+)$/, "$1")),
+    name: result.replace(/^(.*):\d+:\d+$/, '$1'),
+    line: Number(result.replace(/^.*:(\d+):\d+$/, '$')),
+    row: Number(result.replace(/^.*:\d+:(\d+)$/, '$1')),
     originArr: lines,
   };
 }
@@ -133,50 +133,59 @@ function initializeFile(): any {
   } catch (error) {
     a = __filename;
   }
-  if (isWindows) a = a.replace(/\\/gm, "/");
+  if (isWindows) a = a.replace(/\\/gm, '/');
   a = getCallerFilename(a);
   b = dirname(a);
   return [a, b];
 }
 
-/** 根据给定的文件或文件夹名称找到父级目录 
- *  
+/** 根据给定的文件或文件夹名称找到父级目录
+ *
  * ```ts
- *  
- * const result = getDirectoryBy('package.json'); 
- * 
+ *
+ * const result = getDirectoryBy('package.json');
+ *
  * // 倘若 package.json 文件为兄弟目录
- * 
+ *
  * console.log(result); // process.cwd();
- * 
+ *
  * // 倘若当前文件链并不会存在 package.json 则
- * 
+ *
  * console.log(result); // undefined
- * 
+ *
  * ```
  * @param target  目标文件或文件夹
  * @param type 当前设定目标的类型：文件 `file` 或是文件夹 `directory`
  * @param [originalPath='']  查找的原始路径
- * 
+ *
  * @returns 在捕获到目标后会返回目标，否则则返回 undefined
-*/
-function getDirectoryBy(target: string, type: "file" | "directory" = 'file', originalPath: string = ''): string | undefined {
+ */
+function getDirectoryBy(
+  target: string,
+  type: 'file' | 'directory' = 'file',
+  originalPath: string = '',
+): string | undefined {
   // 当前工作目录
   let cwd: string = originalPath || process.cwd();
   // 查看当前工作目录是否存在
   const cwdIsExist = fileExist(cwd);
   // 倘若 cwd 不存在（只要针对于传入参数的情况）
-  if (!cwdIsExist) return "";
+  if (!cwdIsExist) return '';
   if (cwdIsExist.isFile()) cwd = pathDirname(cwd);
-  else if (!cwdIsExist.isDirectory()) return "";
+  else if (!cwdIsExist.isDirectory()) return '';
   do {
     // 目标文件
     let fileTest = fileExist(pathJoin(cwd, target));
     // 判断文件
-    if (fileTest && (type == 'file' && fileTest.isFile() || type == 'directory' && fileTest.isDirectory())) return cwd;
+    if (
+      fileTest &&
+      ((type == 'file' && fileTest.isFile()) ||
+        (type == 'directory' && fileTest.isDirectory()))
+    )
+      return cwd;
     cwd = pathJoin(cwd, '..');
   } while (cwd !== pathJoin(cwd, '..'));
-  return "";
+  return '';
 }
 
 export {
@@ -187,7 +196,7 @@ export {
   getCallerFileInfo,
   getCallerFilename,
   initializeFile,
-  getDirectoryBy
+  getDirectoryBy,
 };
 
 /**

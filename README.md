@@ -99,16 +99,16 @@ The string color value of the terminal (meaning it cannot be used in a browser e
 ### use Color
 
 ```ts
-import { Color } from "ismi-node-tools";
+import { Color } from 'ismi-node-tools';
 
 const { stdout } = process;
 
 stdout.write(
   `${Color.red(
-    `Red start${Color.yellow("The middle is yellow")} and the red ending`
-  )}\n`
+    `Red start${Color.yellow('The middle is yellow')} and the red ending`,
+  )}\n`,
 );
-stdout.write(Color.random("Randomly print a string of color values"));
+stdout.write(Color.random('Randomly print a string of color values'));
 ```
 
 If you have any questions, you can directly [submit question](https://github.com/lmssee/node-tools/issues/new)

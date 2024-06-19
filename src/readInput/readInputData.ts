@@ -1,7 +1,7 @@
-/** 
+/**
  * 创建一个共享的数据中心，用于储存当前的输入的需要
- * 
- * 
+ *
+ *
  */
 export default {
   /** 注册的列表项 */
@@ -10,14 +10,14 @@ export default {
   on(uniKey: symbol, callFn: (a: boolean) => void) {
     const list: any[] = this.callList;
     // 若当前没有执行的
-    (list.length == 0) && Reflect.apply(callFn, undefined, [true]);
-    (list as any).push([uniKey, callFn])
+    list.length == 0 && Reflect.apply(callFn, undefined, [true]);
+    (list as any).push([uniKey, callFn]);
   },
-  /** 
-   * 是否可以清理 readline 
-   * 
-   * 
-   * 
+  /**
+   * 是否可以清理 readline
+   *
+   *
+   *
    */
   get remove(): boolean {
     const list: any[] = this.callList;
@@ -29,4 +29,4 @@ export default {
     }
     return true;
   },
-}
+};
