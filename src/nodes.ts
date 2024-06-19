@@ -98,8 +98,10 @@ function runOtherCode(
       /// 标准输出流
       childProcess.stdout.on('data', data => {
         const _data = data.toString();
-        console.log(_data);
-        stdoutData += _data;
+        if (!/^\s*$/.test(_data)) {
+          console.log(_data);
+          stdoutData += _data;
+        }
       });
       /// 标准输出流输出错误
       childProcess.stderr.on('data', error => console.log(error.toString()));
