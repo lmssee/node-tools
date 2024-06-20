@@ -154,12 +154,14 @@ function runOtherCode(
             Reflect.apply(callBack, null, []);
           }
           clearInterval(aSettingRollup.timeStamp);
+          stdout.write(`${t}0J`);
           resolve({ success, data: stdoutData, error: stderrData });
         }, 100);
       });
     });
   } catch (error) {
     clearInterval(aSettingRollup.timeStamp);
+    stdout.write(`${t}0J`);
     console.log('catch error', error);
     return new Promise(resolve =>
       resolve({ error, data: undefined, success: false }),
