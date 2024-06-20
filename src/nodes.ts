@@ -1,8 +1,8 @@
 import { spawn } from 'node:child_process';
-import { typeOf } from 'ismi-js-tools';
+import { t, typeOf } from 'ismi-js-tools';
 import { lmssee } from './lmssee';
 import https from 'node:https';
-import { pathJoin } from './path';
+import { isWindows, pathJoin } from './path';
 /** Parameter types for `runOtherCode`
  *
  * 执行其他代码的参数类型
@@ -19,6 +19,16 @@ type RunOtherCodeParam =
        * 执行代码的目录
        */
       cwd?: string | undefined;
+      /** Whether to hide waiting
+       *
+       * 是否隐藏等待
+       */
+      hideWaiting?: boolean;
+      /** The waiting prompt text defaults to "请稍等"
+       *
+       * 等待的提示文本，默认为 "请等待"
+       */
+      waitingMessage?: string;
       /** Callback function
        *
        * 回调函数
@@ -36,6 +46,8 @@ type RunOtherCodeParam =
  *          runOtherCode({
  *                  code:"ls",
  *                  pwd : "../",
+ *                  hideWaiting: true,
+ *                  waitingMessage:"请稍等",
  *          }).then((resolve)=>{
  *              console.log(resolve);
  *          });
@@ -70,13 +82,28 @@ type RunOtherCodeParam =
 function runOtherCode(
   param: RunOtherCodeParam,
 ): Promise<{ error: any; success?: boolean; data?: any }> {
+  const { stdout } = process;
+  /**  */
+  const aSettingRollup = {
+    count: 0,
+    timeStamp: setTimeout(() => 1),
+  };
   typeof param == 'string' && (param = { code: param });
-  let { code, cwd, callBack } = Object.assign(
+  let { code, cwd, callBack, hideWaiting, waitingMessage } = Object.assign(
     {
       cwd: '',
+      hideWaiting: false,
+      waitingMessage: '请稍等',
     },
     param,
   );
+  if (!hideWaiting) {
+    aSettingRollup.timeStamp = setInterval(() => {
+      stdout.write(
+        `${t}0J\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % 6)}${t}20D${t}1A`,
+      );
+    }, 100);
+  }
   /// 整理工作路径
   cwd = pathJoin(process.cwd(), cwd);
   /** 解析命令 */
@@ -97,31 +124,43 @@ function runOtherCode(
       });
       /// 标准输出流
       childProcess.stdout.on('data', data => {
-        const _data = data.toString();
+        let _data = data.toString();
+        /// 尾部换行符
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
         if (!/^\s*$/.test(_data)) {
-          console.log(_data);
+          stdout.write(`${t}0J${_data}`);
           stdoutData += _data;
         }
       });
       /// 标准输出流输出错误
-      childProcess.stderr.on('data', error => console.log(error.toString()));
+      childProcess.stderr.on('data', error => {
+        let _data = error.toString();
+        /// 尾部换行符
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
+        stdout.write(`${t}0J${_data}`);
+      });
       /// 出现错误
-      childProcess.on(
-        'error',
-        error => ((success = !1), console.log(error.toString())),
-      );
+      childProcess.on('error', error => {
+        success = !1;
+        let _data = error.toString();
+        /// 尾部换行符
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
+        stdout.write(`${t}0J${_data}`);
+      });
       /// 子进程关闭事件
       childProcess.on('close', () => {
         setTimeout(() => {
-          if (callBack && typeOf(callBack) == 'function')
+          if (callBack && typeOf(callBack) == 'function') {
             Reflect.apply(callBack, null, []);
+          }
+          clearInterval(aSettingRollup.timeStamp);
           resolve({ success, data: stdoutData, error: stderrData });
         }, 100);
       });
     });
   } catch (error) {
+    clearInterval(aSettingRollup.timeStamp);
     console.log('catch error', error);
-
     return new Promise(resolve =>
       resolve({ error, data: undefined, success: false }),
     );

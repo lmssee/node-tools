@@ -22,7 +22,7 @@ test.skip('test get npm pkg info', async t => {
 /** 测试运行其他代码 */
 test('test run other code', async t => {
   const result = await runOtherCode({
-    code: isWindows ? 'dir' : 'ls',
+    code: 'npx ixxx cls &&  npm install',
     cwd: './',
   });
   console.log(result);
