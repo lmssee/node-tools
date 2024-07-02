@@ -2,7 +2,8 @@ node_modules
 
 ## 打包文件
 
-/exportMjs
-/exportCjs
-/exportTypes
+dist
+
+out
+
 /test/out

@@ -8,10 +8,10 @@ export default {
   callList: [],
   /// 添加二点监听项
   on(uniKey: symbol, callFn: (a: boolean) => void) {
-    const list: any[] = this.callList;
+    const list: ReadInputListItem[] = this.callList;
     // 若当前没有执行的
     list.length == 0 && Reflect.apply(callFn, undefined, [true]);
-    (list as any).push([uniKey, callFn]);
+    (list as ReadInputListItem[]).push([uniKey, callFn]);
   },
   /**
    * 是否可以清理 readline
@@ -20,7 +20,7 @@ export default {
    *
    */
   get remove(): boolean {
-    const list: any[] = this.callList;
+    const list: ReadInputListItem[] = this.callList;
     list.shift();
     if (list.length > 0) {
       Reflect.apply(list[0][1], null, [true]);
@@ -30,3 +30,6 @@ export default {
     return true;
   },
 };
+
+/** 导出这个子项的类型声明 */
+export type ReadInputListItem = [symbol, (a: boolean) => void];

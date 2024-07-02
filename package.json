@@ -1,35 +1,36 @@
 {
   "type": "module",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "name": "ismi-node-tools",
-  "main": "exportCjs/index.cjs",
-  "module": "exportMjs/index.mjs",
+  "main": "cjs/index.cjs",
+  "module": "mjs/index.mjs",
+  "typings": "types/index.d.ts",
   "description": "some about node",
-  "typings": "exportTypes/index.d.ts",
   "files": [
-    "exportMjs/",
-    "exportCjs/",
-    "exportTypes/"
+    "cjs/",
+    "mjs/",
+    "types/"
   ],
   "exports": {
     ".": {
       "import": {
-        "types": "./exportTypes/index.d.ts",
-        "default": "./exportMjs/index.mjs"
+        "default": "./mjs/index.mjs",
+        "types": "./types/index.d.ts"
       },
       "require": {
-        "default": "./exportCjs/index.cjs",
-        "types": "./exportTypes/index.d.ts"
+        "default": "./cjs/index.cjs",
+        "types": "./types/index.d.ts"
       }
     }
   },
   "scripts": {
     "b": "rollup --config rollup.config.js && tsc -p tsconfig.types.json",
-    "build": "npx ixxx rm exportMjs exportCjs exportTypes run b",
-    "clean": "npx ixxx up -d  rm node_modules exportMjs exportCjs exportTypes run npm install run b",
+    "build": "npx ixxx rm dist run b",
+    "clean": "npx ixxx up -d  rm node_modules dist  run npm install run b",
     "diff": "npx ixxx pkg  -d",
     "test": "npx ixxx clear  && rollup --config rollup.config.test.js && node test/out/test/index.mjs",
-    "up": "npx ixxx up  -n"
+    "versionPatch": "npm version patch --force --no-git-tag-version --allow-same-version=true",
+    "up": "npx ixxx pkg -u run versionPatch run build && cd dist && npm publish && cd ../"
   },
   "repository": {
     "type": "git",
@@ -55,17 +56,24 @@
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
+    "@eslint/js": "^9.6.0",
     "@rollup/plugin-commonjs": "^25.0.8",
     "@rollup/plugin-json": "^6.1.0",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.14.6",
+    "@types/node": "^20.14.9",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "globals": "^15.8.0",
     "prettier": "^3.3.2",
     "rollup-plugin-cleanup": "^3.2.1",
-    "typescript": "^5.4.5"
+    "rollup-plugin-copy": "^3.5.0",
+    "typescript": "^5.5.3",
+    "typescript-eslint": "^7.15.0"
   },
   "dependencies": {
-    "ismi-js-tools": "^0.0.2"
+    "ismi-js-tools": "^0.0.4"
   }
 }

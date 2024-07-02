@@ -7,7 +7,7 @@ import { readFileSync, statSync, writeFileSync } from 'node:fs';
  */
 function readFileToJson(fileDir: string) {
   return new Promise(
-    (resolve: any, reject: any) =>
+    (resolve, reject) =>
       (!/.json^/.test(fileDir) &&
         !statSync(fileDir, { throwIfNoEntry: false }) &&
         reject({})) ||
@@ -33,7 +33,7 @@ function readFileToJsonSync(fileDir: string) {
 }
 
 /** 将一个 JSON 数据写入空白文件 */
-function writeJsonFile(pathName: string, data: any) {
+function writeJsonFile(pathName: string, data: { [key: string]: string }) {
   writeFileSync(pathName, JSON.stringify(data, null, 2), {
     encoding: 'utf-8',
     flag: 'w',
@@ -46,8 +46,8 @@ function writeJsonFile(pathName: string, data: any) {
  * @param  fileDir  {@link String} 类型，为文件的路径（相对路径或绝对路径）
  * @returns Stats    Stats 或是 null
  */
-function fileExist(fileDir: String) {
-  return statSync(fileDir as any, { throwIfNoEntry: false });
+function fileExist(fileDir: string) {
+  return statSync(fileDir, { throwIfNoEntry: false });
 }
 
 export { readFileToJson, readFileToJsonSync, fileExist, writeJsonFile };

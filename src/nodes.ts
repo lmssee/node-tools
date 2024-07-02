@@ -1,6 +1,5 @@
 import { spawn } from 'node:child_process';
 import { t, typeOf } from 'ismi-js-tools';
-import { lmssee } from './lmssee';
 import https from 'node:https';
 import { isWindows, pathJoin } from './path';
 /** Parameter types for `runOtherCode`
@@ -33,7 +32,7 @@ type RunOtherCodeParam =
        *
        * 回调函数
        */
-      callBack?: any;
+      callBack?: () => 2;
     }
   | string;
 
@@ -79,9 +78,11 @@ type RunOtherCodeParam =
  *
  *
  */
-function runOtherCode(
-  param: RunOtherCodeParam,
-): Promise<{ error: any; success?: boolean; data?: any }> {
+function runOtherCode(param: RunOtherCodeParam): Promise<{
+  error: undefined | string | unknown;
+  success?: boolean;
+  data?: undefined | string;
+}> {
   const { stdout } = process;
   /**  */
   const aSettingRollup = {
@@ -89,7 +90,7 @@ function runOtherCode(
     timeStamp: setTimeout(() => 1),
   };
   typeof param == 'string' && (param = { code: param });
-  let { code, cwd, callBack, hideWaiting, waitingMessage } = Object.assign(
+  const template = Object.assign(
     {
       cwd: '',
       hideWaiting: false,
@@ -97,6 +98,8 @@ function runOtherCode(
     },
     param,
   );
+  const { code, callBack, hideWaiting, waitingMessage } = template;
+  let { cwd } = template;
   if (!hideWaiting) {
     aSettingRollup.timeStamp = setInterval(() => {
       stdout.write(
@@ -113,7 +116,7 @@ function runOtherCode(
     .split(' ');
 
   try {
-    return new Promise((resolve: any, reject: any) => {
+    return new Promise(resolve => {
       let stdoutData = '',
         stderrData = '',
         success = true;
@@ -138,6 +141,7 @@ function runOtherCode(
         /// 尾部换行符
         !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
         stdout.write(`${t}0J${_data}`);
+        stderrData += _data;
       });
       /// 出现错误
       childProcess.on('error', error => {
@@ -174,28 +178,28 @@ function runOtherCode(
  *
  * 初始化全局数据
  */
-function initLmssee(data?: any) {
-  if (!globalThis) return;
-  globalThis &&
-    !(globalThis as any).lmssee &&
-    Object.defineProperty(globalThis, 'lmssee', {
-      value: lmssee,
-      writable: true,
-      enumerable: true,
-      configurable: false,
-    });
-  data &&
-    typeOf(data) == 'object' &&
-    Object.keys(data).length == 1 &&
-    !(lmssee as any)(Object.keys(data)[0]) &&
-    Object.defineProperty(lmssee, Object.keys(data)[0], {
-      value: Object.values(data)[0],
-      writable: true,
-      enumerable: true,
-      configurable: false,
-    });
-  return lmssee;
-}
+// function initLmssee(data?: any) {
+//   if (!globalThis) return;
+//   globalThis &&
+//     !(globalThis as any).lmssee &&
+//     Object.defineProperty(globalThis, 'lmssee', {
+//       value: lmssee,
+//       writable: true,
+//       enumerable: true,
+//       configurable: false,
+//     });
+//   data &&
+//     typeOf(data) == 'object' &&
+//     Object.keys(data).length == 1 &&
+//     !(lmssee as any)(Object.keys(data)[0]) &&
+//     Object.defineProperty(lmssee, Object.keys(data)[0], {
+//       value: Object.values(data)[0],
+//       writable: true,
+//       enumerable: true,
+//       configurable: false,
+//     });
+//   return lmssee;
+// }
 
 /**
  *
@@ -205,42 +209,46 @@ function initLmssee(data?: any) {
  *
  * @returns 返回是一个对象
  */
-async function getNpmPkgInfo(pkgName: string): Promise<{ [key: string]: any }> {
-  return new Promise(async (resolve: any, reject: any) => {
-    let result: any = '';
-    const npmPackageIsExit = await testNpmPackageExist(pkgName);
-    if (!npmPackageIsExit) return reject({});
-    const req = https.get(
-      `https://www.npmjs.com/package/${pkgName || 'ismi-node-tools'}`,
-      {
-        headers: {
-          'sec-fetch-dest': 'empty',
-          // "X-Requested-With": "XMLHttpRequest",
-          // "Sec-Fetch-Mode": "cors",
-          // "Sec-Fetch-Site": "same-origin",
-          // Accept: "*/*",
-          // Referer: `https://www.npmjs.com/package/${pkgName}`,
-          'X-Spiferack': 1,
+async function getNpmPkgInfo(
+  pkgName: string,
+): Promise<{ [key: string]: string }> {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      let result: string = '';
+      const npmPackageIsExit = await testNpmPackageExist(pkgName);
+      if (!npmPackageIsExit) return reject({});
+      const req = https.get(
+        `https://www.npmjs.com/package/${pkgName || 'ismi-node-tools'}`,
+        {
+          headers: {
+            'sec-fetch-dest': 'empty',
+            // "X-Requested-With": "XMLHttpRequest",
+            // "Sec-Fetch-Mode": "cors",
+            // "Sec-Fetch-Site": "same-origin",
+            // Accept: "*/*",
+            // Referer: `https://www.npmjs.com/package/${pkgName}`,
+            'X-Spiferack': 1,
+          },
         },
-      },
-      response => {
-        response.on('data', data => (result += data.toString()));
-        /// 请求结束后
-        response.on('end', () => {
-          if (response.statusCode == 200) {
-            const pkgInfo = JSON.parse(result);
-            const info = pkgInfo.packageVersion;
-            pkgInfo.name = info.name;
-            pkgInfo.version = info.version;
-            resolve(pkgInfo || {});
-          } else {
-            resolve({});
-          }
-        });
-      },
-    );
-    req.on('error', () => resolve({}));
-    req.end();
+        response => {
+          response.on('data', data => (result += data.toString()));
+          /// 请求结束后
+          response.on('end', () => {
+            if (response.statusCode == 200) {
+              const pkgInfo = JSON.parse(result);
+              const info = pkgInfo.packageVersion;
+              pkgInfo.name = info.name;
+              pkgInfo.version = info.version;
+              resolve(pkgInfo || {});
+            } else {
+              resolve({});
+            }
+          });
+        },
+      );
+      req.on('error', () => resolve({}));
+      req.end();
+    })();
   });
 }
 /**
@@ -262,10 +270,10 @@ async function testNpmPackageExist(pkgName: string): Promise<boolean> {
   });
 }
 
-async function get(url: string): Promise<any> {
-  return new Promise((response, reject) => {
-    response(true);
-  });
-}
+// async function get(url: string): Promise<any> {
+//   return new Promise((response) => {
+//     response(true);
+//   });
+// }
 
 export { runOtherCode, getNpmPkgInfo, testNpmPackageExist, RunOtherCodeParam };

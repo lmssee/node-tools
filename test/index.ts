@@ -1,5 +1,3 @@
-import { test, mock, describe, it } from 'node:test';
-import assert from 'node:assert';
 import testReadInput from './testReadInput';
 import testColor from './testColor';
 import testCursor from './testCursor';

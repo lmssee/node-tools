@@ -21,12 +21,14 @@ const cursorGetPosition = () => {
     input: stdin,
     output: stdout,
   });
-  return new Promise((resolve: any, reject: any) => {
+  return new Promise((resolve, reject) => {
     _p('6n');
-    const dataCall = (data: any) => {
+    const dataCall = (data: { toString: () => string }) => {
+      // eslint-disable-next-line no-control-regex
       const match = data.toString().match(/^\x1b\[(\d+);(\d+)R$/i);
       if (match) {
         const [_, row, col] = match;
+        _;
         stdin.removeListener('data', dataCall);
         rl.close();
         resolve([row, col]);

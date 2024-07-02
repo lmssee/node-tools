@@ -1,4 +1,3 @@
-import { cursorGetPosition, readInput } from 'index';
 import { test } from 'node:test';
 
 /** 测试光标的位置 */

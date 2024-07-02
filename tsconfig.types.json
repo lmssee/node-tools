@@ -4,8 +4,8 @@
   "compilerOptions": {
     "emitDeclarationOnly": true,
     "declaration": true,
-    "declarationDir": "exportTypes/"
+    "declarationDir": "dist/types/"
     // "types": ["node"],
   },
-  "exclude": ["node_modules", "exportTypes/", "test"]
+  "exclude": ["node_modules", "dist", "test"]
 }

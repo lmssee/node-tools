@@ -3,12 +3,12 @@ import {
   win32,
   posix,
   dirname,
-  isAbsolute,
-  extname,
-  format,
   join,
   normalize,
-  sep,
+  // isAbsolute,
+  // extname,
+  // format,
+  // sep,
 } from 'node:path';
 import { fileExist } from './file';
 
@@ -16,7 +16,7 @@ import { fileExist } from './file';
  * 判断当前是否为 windows 环境
  *
  *  https://nodejs.org/docs/latest/api/path.html  */
-const isWindows: Boolean = process.platform == 'win32';
+const isWindows: boolean = process.platform == 'win32';
 
 /** file name
  *
@@ -59,18 +59,18 @@ function getCallerFileInfo(fileName: string): {
 } {
   /** 结果行 */
   const regexp = new RegExp(fileName);
-  let errorInfo;
+  let errorInfo: Error;
   try {
     // 抛出异常好通过这里捕捉调用栈信息
     throw new Error();
-  } catch (error: any) {
-    errorInfo = error;
+  } catch (error: unknown) {
+    errorInfo = error as Error;
   }
   const lines: string[] = (
-    errorInfo.stack.replace(/\\/gm, '/').split('\n') as string[]
+    errorInfo.stack?.replace(/\\/gm, '/').split('\n') as string[]
   ).reverse();
   /** 查找结果 */
-  let resultIndex: number = lines.findIndex(
+  const resultIndex: number = lines.findIndex(
     (currentEle: string, currentIndex: number, arr: string[]) =>
       !regexp.test(currentEle) && regexp.test(arr[currentIndex + 1]),
   );
@@ -84,7 +84,7 @@ function getCallerFileInfo(fileName: string): {
     result = result.replace(/^.*\((.*)\).*/, '$1');
   }
   /** 在 windows 环境去除 file：/// 前缀 */
-  if (/file:\/*/) {
+  if (/file:\/*/.test(result)) {
     result = result.replace(/^.*file:\/*(.*)/, '$1');
   }
   // 非 windows 桌面添加 /
@@ -122,11 +122,10 @@ function getCallerFilename(fileName: string) {
  *
  * @return {*}  [__filename,__dirname]
  */
-function initializeFile(): any {
+function initializeFile(): [string, string] {
   /** 文件地址  */
-  let a,
-    /** 文件躲在目录地址  */
-    b;
+  let a;
+  /** 文件躲在目录地址  */
   try {
     new Function('import("")');
     a = fileURLToPath(import.meta.url);
@@ -135,7 +134,7 @@ function initializeFile(): any {
   }
   if (isWindows) a = a.replace(/\\/gm, '/');
   a = getCallerFilename(a);
-  b = dirname(a);
+  const b = dirname(a);
   return [a, b];
 }
 
@@ -175,7 +174,7 @@ function getDirectoryBy(
   else if (!cwdIsExist.isDirectory()) return '';
   do {
     // 目标文件
-    let fileTest = fileExist(pathJoin(cwd, target));
+    const fileTest = fileExist(pathJoin(cwd, target));
     // 判断文件
     if (
       fileTest &&
