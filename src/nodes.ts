@@ -84,7 +84,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
   data?: undefined | string;
 }> {
   const { stdout } = process;
-  /**  */
+  /** 一个简单的轮询  */
   const aSettingRollup = {
     count: 0,
     timeStamp: setTimeout(() => 1),
@@ -100,6 +100,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
   );
   const { code, callBack, hideWaiting, waitingMessage } = template;
   let { cwd } = template;
+  /** 打印请稍等。。。 */
   if (!hideWaiting) {
     aSettingRollup.timeStamp = setInterval(() => {
       stdout.write(
@@ -166,7 +167,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
   } catch (error) {
     clearInterval(aSettingRollup.timeStamp);
     stdout.write(`${t}0J`);
-    console.log('catch error', error);
+    process.stdout.write('catch error'.concat((error as string).toString()));
     return new Promise(resolve =>
       resolve({ error, data: undefined, success: false }),
     );
@@ -212,11 +213,11 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
 async function getNpmPkgInfo(
   pkgName: string,
 ): Promise<{ [key: string]: string }> {
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     (async () => {
       let result: string = '';
       const npmPackageIsExit = await testNpmPackageExist(pkgName);
-      if (!npmPackageIsExit) return reject({});
+      if (npmPackageIsExit == 404 || !npmPackageIsExit) return resolve({});
       const req = https.get(
         `https://www.npmjs.com/package/${pkgName || 'ismi-node-tools'}`,
         {
@@ -256,8 +257,8 @@ async function getNpmPkgInfo(
  *
  * 包存在则返回 true，不知存在则返回 false （刷的太快有意外，注意）
  */
-async function testNpmPackageExist(pkgName: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
+async function testNpmPackageExist(pkgName: string): Promise<boolean | number> {
+  return new Promise(resolve => {
     const req = https.get(
       `https://www.npmjs.com/package/${pkgName}`,
       response => (
@@ -265,7 +266,7 @@ async function testNpmPackageExist(pkgName: string): Promise<boolean> {
         response.on('end', () => resolve(response.statusCode == 200))
       ),
     );
-    req.on('error', () => reject(undefined));
+    req.on('error', () => resolve(404));
     req.end();
   });
 }
