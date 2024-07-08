@@ -42,16 +42,19 @@ npm install   ismi-node-tools  --save
 
 You can use cursor to manipulate the cursor position:
 
-|         Method          |        Schematic         |                 Parameters                 |
-| :---------------------: | :----------------------: | :----------------------------------------: |
-|      `cursorHide`       |       cursor hide        |                     --                     |
-|      `cursorShow`       |       cursor show        |                     --                     |
-|  `cursorPositionSave`   |  Store cursor position   |                     --                     |
-| `cursorPositionRestore` | Restores cursor position |                     --                     |
-|     `cursorMoveUp`      |        cursor Up         | `numberOfUpwardMoves` offset, default to 1 |
-|    `cursorMoveDown`     |       cursor Down        |  `numberOfMovesDown` offset, default to 1  |
-|    `cursorMoveLeft`     |       cursor Left        | `numberOfLeftShifts` offset, default to 1  |
-|    `cursorMoveRight`    |       cursor Right       | `numberOfRightShifts` offset, default to 1 |
+|         Method          |          Schematic          |                 Parameters                 |
+| :---------------------: | :-------------------------: | :----------------------------------------: |
+|           `t`           |          `\u001B`           |                     --                     |
+|          `_p`           | on `node` environment print |                     --                     |
+|      `cursorHide`       |         cursor hide         |                     --                     |
+|      `cursorShow`       |         cursor show         |                     --                     |
+|  `cursorPositionSave`   |    Store cursor position    |                     --                     |
+| `cursorPositionRestore` |  Restores cursor position   |                     --                     |
+|     `cursorMoveUp`      |          cursor Up          | `numberOfUpwardMoves` offset, default to 1 |
+|    `cursorMoveDown`     |         cursor Down         |  `numberOfMovesDown` offset, default to 1  |
+|    `cursorMoveLeft`     |         cursor Left         | `numberOfLeftShifts` offset, default to 1  |
+|    `cursorMoveRight`    |        cursor Right         | `numberOfRightShifts` offset, default to 1 |
+|   `cursorAfterClear`    |   clear all after cursor    |                     --                     |
 
 ### readInput section
 
@@ -99,16 +102,17 @@ The string color value of the terminal (meaning it cannot be used in a browser e
 ### use Color
 
 ```ts
-import { Color } from 'ismi-node-tools';
+import { Color, _p } from 'ismi-node-tools';
 
-const { stdout } = process;
+/** `_Color` does not necessarily have to ce used together with `_p` ，`_p` is just the encapsulation of `process.stdout.write` */
 
-stdout.write(
+_p(
   `${Color.red(
     `Red start${Color.yellow('The middle is yellow')} and the red ending`,
   )}\n`,
 );
-stdout.write(Color.random('Randomly print a string of color values'));
+
+_p(Color.random('Randomly print a string of color values'));
 ```
 
 If you have any questions, you can directly [submit question](https://github.com/lmssee/node-tools/issues/new)

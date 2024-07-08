@@ -1,6 +1,6 @@
 {
   "type": "module",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "name": "ismi-node-tools",
   "main": "cjs/index.cjs",
   "module": "mjs/index.mjs",
@@ -29,6 +29,8 @@
     "clean": "npx ixxx up -d  rm node_modules dist  run npm install run b",
     "diff": "npx ixxx pkg  -d",
     "test": "npx ixxx clear  && rollup --config rollup.config.test.js && node test/out/test/index.mjs",
+    "beautify": "npx prettier . --write",
+    "eslint": "npx eslint src",
     "versionPatch": "npm version patch --force --no-git-tag-version --allow-same-version=true",
     "up": "npx ixxx pkg -u run versionPatch run build && cd dist && npm publish && cd ../"
   },
@@ -62,7 +64,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/node": "^20.14.9",
+    "@types/node": "^20.14.10",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",

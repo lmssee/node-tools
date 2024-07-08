@@ -19,6 +19,9 @@ export {
 } from './src/nodes';
 export {
   t,
+  __p,
+  _p,
+  cursorAfterClear,
   cursorHide,
   cursorShow,
   cursorGetPosition,

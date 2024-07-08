@@ -2,6 +2,7 @@ import { spawn } from 'node:child_process';
 import { t, typeOf } from 'ismi-js-tools';
 import https from 'node:https';
 import { isWindows, pathJoin } from './path';
+import { _p, cursorAfterClear, cursorHide, cursorShow } from './cursor';
 /** Parameter types for `runOtherCode`
  *
  * 执行其他代码的参数类型
@@ -83,7 +84,6 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
   success?: boolean;
   data?: undefined | string;
 }> {
-  const { stdout } = process;
   /** 一个简单的轮询  */
   const aSettingRollup = {
     count: 0,
@@ -102,9 +102,15 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
   let { cwd } = template;
   /** 打印请稍等。。。 */
   if (!hideWaiting) {
+    /// 隐藏光标
+    cursorHide();
+    /// 心跳打印 '请稍等'
     aSettingRollup.timeStamp = setInterval(() => {
-      stdout.write(
-        `${t}0J\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % 6)}${t}20D${t}1A`,
+      // 清理光标后内容
+      cursorAfterClear();
+      // 打印文本
+      _p(
+        `\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % 6)}${t}20D${t}1A`,
       );
     }, 100);
   }
@@ -132,7 +138,10 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         /// 尾部换行符
         !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
         if (!/^\s*$/.test(_data)) {
-          stdout.write(`${t}0J${_data}`);
+          // 清理光标后内容
+          cursorAfterClear();
+          // 打印文本
+          _p(_data);
           stdoutData += _data;
         }
       });
@@ -141,7 +150,10 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         let _data = error.toString();
         /// 尾部换行符
         !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
-        stdout.write(`${t}0J${_data}`);
+        // 清理光标后内容
+        cursorAfterClear();
+        // 打印文本
+        _p(_data);
         stderrData += _data;
       });
       /// 出现错误
@@ -150,7 +162,10 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         let _data = error.toString();
         /// 尾部换行符
         !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
-        stdout.write(`${t}0J${_data}`);
+        // 清理光标后内容
+        cursorAfterClear();
+        // 打印文本
+        _p(_data);
       });
       /// 子进程关闭事件
       childProcess.on('close', () => {
@@ -159,18 +174,21 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
             Reflect.apply(callBack, null, []);
           }
           clearInterval(aSettingRollup.timeStamp);
-          stdout.write(`${t}0J`);
+          cursorAfterClear();
+          cursorShow();
           resolve({ success, data: stdoutData, error: stderrData });
         }, 100);
       });
     });
   } catch (error) {
     clearInterval(aSettingRollup.timeStamp);
-    stdout.write(`${t}0J`);
-    process.stdout.write('catch error'.concat((error as string).toString()));
-    return new Promise(resolve =>
-      resolve({ error, data: undefined, success: false }),
-    );
+    //  清理光标后的剩余屏幕部分
+    cursorAfterClear();
+    _p('catch error'.concat((error as string).toString()));
+    return new Promise(resolve => {
+      cursorShow();
+      resolve({ error, data: undefined, success: false });
+    });
   }
 }
 
