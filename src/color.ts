@@ -2,7 +2,8 @@ import { t } from './cursor';
 import { getRandomInt } from 'ismi-js-tools';
 
 /**
- * 这是一个颜色的定义区
+ * 这是一个颜色的定义区 \
+ *
  */
 export class Color {
   value: string;

@@ -17,19 +17,25 @@ A purely functional tool that includes
 npm install   ismi-node-tools  --save
 ```
 
-## file
+## `file`
 
 - `readFileToJson` read `.json` file and return JSON or `null`
 - `readFileToJsonSync` synchronous read `.json` file and return `JSON` or `null`
 - `fileExist` Does the file exist
 - `writeJsonFile` 把 `json` Write data to a blank file
 
-## mode section
+## `runOtherCode` section
 
 - `runOtherCode` Run other code
 - `RunOtherCodeParam` Declaration of parameter types for running other code
 
-## path section
+## `npmPkg` section
+
+- `npmPkgInfoType` type of `getNpmPkgInfo` returns
+- `getNpmPkgInfo` get npm package info
+- `testNpmPackageExist` test a npm package is exist
+
+## `path` section
 
 - `pathJoin` File address concatenation
 - `pathBasename` Provide file path to obtain file name, without file type suffix

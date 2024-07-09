@@ -5,10 +5,11 @@
     "strict": true,
     "target": "ESNext",
     "module": "ESNext",
-    "moduleResolution": "Node",
     "skipLibCheck": true,
     /**  */
     "esModuleInterop": true,
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
     "lib": ["ESNext", "DOM"],
     "sourceMap": false
   }

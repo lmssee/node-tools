@@ -11,12 +11,14 @@ export {
 } from './src/path';
 export { readInput } from './src/readInput/readInput';
 export { Color } from './src/color';
+export { runOtherCode, RunOtherCodeParam } from './src/runOtherCode';
+
 export {
-  runOtherCode,
   getNpmPkgInfo,
   testNpmPackageExist,
-  RunOtherCodeParam,
-} from './src/nodes';
+  npmPkgInfoType,
+} from './src/npmPkg';
+
 export {
   t,
   __p,

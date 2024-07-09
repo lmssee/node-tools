@@ -1,6 +1,5 @@
 import { spawn } from 'node:child_process';
 import { t, typeOf } from 'ismi-js-tools';
-import https from 'node:https';
 import { isWindows, pathJoin } from './path';
 import { _p, cursorAfterClear, cursorHide, cursorShow } from './cursor';
 /** Parameter types for `runOtherCode`
@@ -220,79 +219,10 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
 //   return lmssee;
 // }
 
-/**
- *
- * 获取给定 npm 包的内容的信息
- *
- * @param pkg 包的名字
- *
- * @returns 返回是一个对象
- */
-async function getNpmPkgInfo(
-  pkgName: string,
-): Promise<{ [key: string]: string }> {
-  return new Promise(resolve => {
-    (async () => {
-      let result: string = '';
-      const npmPackageIsExit = await testNpmPackageExist(pkgName);
-      if (npmPackageIsExit == 404 || !npmPackageIsExit) return resolve({});
-      const req = https.get(
-        `https://www.npmjs.com/package/${pkgName || 'ismi-node-tools'}`,
-        {
-          headers: {
-            'sec-fetch-dest': 'empty',
-            // "X-Requested-With": "XMLHttpRequest",
-            // "Sec-Fetch-Mode": "cors",
-            // "Sec-Fetch-Site": "same-origin",
-            // Accept: "*/*",
-            // Referer: `https://www.npmjs.com/package/${pkgName}`,
-            'X-Spiferack': 1,
-          },
-        },
-        response => {
-          response.on('data', data => (result += data.toString()));
-          /// 请求结束后
-          response.on('end', () => {
-            if (response.statusCode == 200) {
-              const pkgInfo = JSON.parse(result);
-              const info = pkgInfo.packageVersion;
-              pkgInfo.name = info.name;
-              pkgInfo.version = info.version;
-              resolve(pkgInfo || {});
-            } else {
-              resolve({});
-            }
-          });
-        },
-      );
-      req.on('error', () => resolve({}));
-      req.end();
-    })();
-  });
-}
-/**
- * 测试 npm  包是否存在
- *
- * 包存在则返回 true，不知存在则返回 false （刷的太快有意外，注意）
- */
-async function testNpmPackageExist(pkgName: string): Promise<boolean | number> {
-  return new Promise(resolve => {
-    const req = https.get(
-      `https://www.npmjs.com/package/${pkgName}`,
-      response => (
-        response.on('data', () => 0),
-        response.on('end', () => resolve(response.statusCode == 200))
-      ),
-    );
-    req.on('error', () => resolve(404));
-    req.end();
-  });
-}
-
 // async function get(url: string): Promise<any> {
 //   return new Promise((response) => {
 //     response(true);
 //   });
 // }
 
-export { runOtherCode, getNpmPkgInfo, testNpmPackageExist, RunOtherCodeParam };
+export { runOtherCode, RunOtherCodeParam };
