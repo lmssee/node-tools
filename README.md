@@ -48,19 +48,19 @@ npm install   ismi-node-tools  --save
 
 You can use cursor to manipulate the cursor position:
 
-|         Method          |          Schematic          |                 Parameters                 |
-| :---------------------: | :-------------------------: | :----------------------------------------: |
-|           `t`           |          `\u001B`           |                     --                     |
-|          `_p`           | on `node` environment print |                     --                     |
-|      `cursorHide`       |         cursor hide         |                     --                     |
-|      `cursorShow`       |         cursor show         |                     --                     |
-|  `cursorPositionSave`   |    Store cursor position    |                     --                     |
-| `cursorPositionRestore` |  Restores cursor position   |                     --                     |
-|     `cursorMoveUp`      |          cursor Up          | `numberOfUpwardMoves` offset, default to 1 |
-|    `cursorMoveDown`     |         cursor Down         |  `numberOfMovesDown` offset, default to 1  |
-|    `cursorMoveLeft`     |         cursor Left         | `numberOfLeftShifts` offset, default to 1  |
-|    `cursorMoveRight`    |        cursor Right         | `numberOfRightShifts` offset, default to 1 |
-|   `cursorAfterClear`    |   clear all after cursor    |                     --                     |
+|         Method          |          Schematic          |                      Parameters                       |
+| :---------------------: | :-------------------------: | :---------------------------------------------------: |
+|           `t`           |          `\u001B`           |                          --                           |
+|          `_p`           | on `node` environment print | `r` print string; `lineFeed` line feed,default `true` |
+|      `cursorHide`       |         cursor hide         |                          --                           |
+|      `cursorShow`       |         cursor show         |                          --                           |
+|  `cursorPositionSave`   |    Store cursor position    |                          --                           |
+| `cursorPositionRestore` |  Restores cursor position   |                          --                           |
+|     `cursorMoveUp`      |          cursor Up          |      `numberOfUpwardMoves` offset, default to 1       |
+|    `cursorMoveDown`     |         cursor Down         |       `numberOfMovesDown` offset, default to 1        |
+|    `cursorMoveLeft`     |         cursor Left         |       `numberOfLeftShifts` offset, default to 1       |
+|    `cursorMoveRight`    |        cursor Right         |      `numberOfRightShifts` offset, default to 1       |
+|   `cursorAfterClear`    |   clear all after cursor    |                          --                           |
 
 ### readInput section
 
@@ -115,7 +115,7 @@ import { Color, _p } from 'ismi-node-tools';
 _p(
   `${Color.red(
     `Red start${Color.yellow('The middle is yellow')} and the red ending`,
-  )}\n`,
+  )}`,
 );
 
 _p(Color.random('Randomly print a string of color values'));

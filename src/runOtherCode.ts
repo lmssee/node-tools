@@ -110,6 +110,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
       // 打印文本
       _p(
         `\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % 6)}${t}20D${t}1A`,
+        false,
       );
     }, 100);
   }
@@ -135,7 +136,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
       childProcess.stdout.on('data', data => {
         let _data = data.toString();
         /// 尾部换行符
-        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r' : ''));
         if (!/^\s*$/.test(_data)) {
           // 清理光标后内容
           cursorAfterClear();
@@ -148,7 +149,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
       childProcess.stderr.on('data', error => {
         let _data = error.toString();
         /// 尾部换行符
-        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r' : ''));
         // 清理光标后内容
         cursorAfterClear();
         // 打印文本
@@ -160,7 +161,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         success = !1;
         let _data = error.toString();
         /// 尾部换行符
-        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r\n' : '\n'));
+        !/\n$/.test(_data) && (_data = _data.concat(isWindows ? '\r' : ''));
         // 清理光标后内容
         cursorAfterClear();
         // 打印文本

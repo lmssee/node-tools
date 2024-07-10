@@ -5,10 +5,11 @@ const t = '\u001B[',
   { stdout, stdin } = process;
 
 /** 打印文本内容  */
-const _p = (r: string) => stdout.write(r);
+const _p = (r: string, lineFeed: boolean = true) =>
+  stdout.write(lineFeed ? r.concat('\n') : r);
 
 /*** 打印转义的内容  */
-const __p = (r: string | number) => _p(`${t}${r}`);
+const __p = (r: string | number) => _p(`${t}${r}`, false);
 /** Cursor is hidden at the terminal
  *
  * 光标在终端进行隐藏
