@@ -1,5 +1,5 @@
 import { spawn } from 'node:child_process';
-import { t, typeOf } from 'ismi-js-tools';
+import { t, typeOf } from 'a-js-tools';
 import { isWindows, pathJoin } from './path';
 import { _p, cursorAfterClear, cursorHide, cursorShow } from './cursor';
 /** Parameter types for `runOtherCode`

@@ -1,7 +1,7 @@
 {
   "type": "module",
-  "version": "0.0.14",
-  "name": "ismi-node-tools",
+  "version": "0.0.0",
+  "name": "a-node-tools",
   "main": "cjs/index.cjs",
   "module": "mjs/index.mjs",
   "typings": "types/index.d.ts",
@@ -41,12 +41,8 @@
   "author": "lmssee <lmssee@outlook.com>  (https://lmssee.github.io)",
   "license": "ISC",
   "keywords": [
-    "letmiseesee",
-    "lmssee",
-    "is-mi",
-    "ismi",
     "node-tools",
-    "is-mi-node-tools"
+    "a-node-tools"
   ],
   "homepage": "https://lmssee.github.io/node-tools",
   "bugs": {
@@ -76,6 +72,6 @@
     "typescript-eslint": "^7.16.0"
   },
   "dependencies": {
-    "ismi-js-tools": "^0.0.4"
+    "a-js-tools": "^0.0.0"
   }
 }

@@ -1,5 +1,5 @@
 import { t } from './cursor';
-import { getRandomInt } from 'ismi-js-tools';
+import { getRandomInt } from 'a-js-tools';
 
 /**
  * 这是一个颜色的定义区 \

@@ -1,4 +1,4 @@
-import { getRandomInt, typeOf } from 'ismi-js-tools';
+import { getRandomInt, typeOf } from 'a-js-tools';
 import { createInterface, Interface } from 'node:readline';
 import readInputData from './readInputData';
 
