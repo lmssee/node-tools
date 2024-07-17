@@ -1,5 +1,21 @@
 # 更新日志
 
+## 0.0.2 (7 月 12 日 2024 年)
+
+- [多次调用显示提示](#多次调用显示提示)
+- 现在 -p 可打印多种数据而不限于打印字符串
+
+### 多次调用显示提示
+
+```sh
+ MaxListenersExceededWarning: Possible EventEmitter memory leak detected.
+  11 beforeExit listeners added to [process].
+  Use emitter.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+```
+
+通过使用 `node --trace-warnings` 命令查看出最后报错位置为在 `readInput` 中产生的,现已修复
+
 ## 0.0.0 (7 月 12 日 2024 年)
 
 - 热衷于换名字

@@ -1,3 +1,4 @@
+import { typeOf } from 'a-js-tools';
 import { createInterface } from 'node:readline';
 
 /** 一个转义码  */
@@ -5,8 +6,39 @@ const t = '\u001B[',
   { stdout, stdin } = process;
 
 /** 打印文本内容  */
-const _p = (r: string, lineFeed: boolean = true) =>
-  stdout.write(lineFeed ? r.concat('\n') : r);
+function _p(r: unknown, lineFeed: boolean = true): void {
+  const typeOfR = typeof r;
+  if (
+    typeOfR === 'string' ||
+    typeOfR === 'number' ||
+    typeOfR === 'bigint' ||
+    typeOfR === 'boolean' ||
+    typeOfR === 'undefined' ||
+    typeOfR === 'function' ||
+    typeOf(r) == 'null'
+  ) {
+    // 当为非 null 的基础类型数据
+    stdout.write(`${r}`);
+  } else {
+    // 当为其他类型的数据使用  `JSON.stringify()` 进行转化
+    stdout.write(
+      JSON.stringify(
+        r,
+        (key: string, value: unknown) => {
+          const value_type = typeOf(value);
+          if (value_type == 'function') {
+            return `${value}`;
+          } else if (value == undefined) {
+            return 'undefined';
+          }
+          return value;
+        },
+        2,
+      ),
+    );
+  }
+  lineFeed && stdout.write('\n');
+}
 
 /*** 打印转义的内容  */
 const __p = (r: string | number) => _p(`${t}${r}`, false);

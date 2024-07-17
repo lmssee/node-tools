@@ -14,6 +14,3 @@ test.skip('initializeFile', () => {
   console.log(__filename);
   console.log(__dirname);
 });
-
-/** 测试地址部分 */
-export default () => 1;

@@ -1,4 +1,5 @@
-import { readInput } from 'index';
+import { typeOf } from 'a-js-tools';
+import { _p, readInput } from 'index';
 import { test } from 'node:test';
 
 /** 测试 userInput 的自动事件序列化  */
@@ -25,4 +26,22 @@ test.skip('should user input data store', () => {
   });
 });
 
-export default () => 1;
+/** 测试多次调用后监听超限 */
+test('test MaxListenersExceededWarning error', async () => {
+  async function _t() {
+    const result = await readInput(
+      (keyValue: string | undefined, key: unknown) => {
+        keyValue;
+        key;
+        return true;
+      },
+    );
+
+    console.log(result);
+    _p(typeOf(result));
+
+    _p(result);
+  }
+
+  await _t();
+});

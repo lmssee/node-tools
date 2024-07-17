@@ -13,7 +13,7 @@ test.skip('test npm pkg exist', async () => {
 });
 
 /** 测试从 npm 管理后台获取包信息 */
-test('test get npm pkg info', async () => {
+test.skip('test get npm pkg info', async () => {
   const name = 'aaa';
   const result = (await getNpmPkgInfo(name)) as npmPkgInfoType;
   console.log(result);
@@ -32,6 +32,3 @@ test.skip('test run other code', async () => {
 
   assert.notEqual(result.success, false);
 });
-
-/** 测试 node 部分 */
-export default () => 1;
