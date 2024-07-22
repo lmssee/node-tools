@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises';
-import { readFileSync, statSync, writeFileSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 /**
  *  读取 json 文件返回为 JSON 格式
  * @param fileDir  {@link String}  文件目录
@@ -46,8 +46,36 @@ function writeJsonFile(pathName: string, data: { [key: string]: string }) {
  * @param  fileDir  {@link String} 类型，为文件的路径（相对路径或绝对路径）
  * @returns Stats    Stats 或是 null
  */
-function fileExist(fileDir: string) {
+function isExist(fileDir: string) {
   return statSync(fileDir, { throwIfNoEntry: false });
 }
 
-export { readFileToJson, readFileToJsonSync, fileExist, writeJsonFile };
+/**
+ * 判断文件夹是否为空
+ *
+ *
+ *
+ */
+function isEmpty(dirname: string): number {
+  const fileInfo = isExist(dirname);
+  if (fileInfo && fileInfo.isDirectory()) {
+    return Number(readdirSync(dirname, { withFileTypes: true }).length == 0);
+  }
+  return -1;
+}
+
+export {
+  readFileToJson,
+  readFileToJsonSync,
+  isExist as fileExist,
+  isEmpty as dirEmpty,
+  writeJsonFile,
+};
+
+export default {
+  readFileToJson,
+  readFileToJsonSync,
+  isExist,
+  isEmpty,
+  writeJsonFile,
+};

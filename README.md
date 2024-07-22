@@ -22,6 +22,7 @@ npm install   a-node-tools  --save
 - `readFileToJson` read `.json` file and return JSON or `null`
 - `readFileToJsonSync` synchronous read `.json` file and return `JSON` or `null`
 - `fileExist` Does the file exist
+- `dirEmpty` Does the director is empty
 - `writeJsonFile` 把 `json` Write data to a blank file
 
 ## `runOtherCode` section

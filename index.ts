@@ -1,4 +1,6 @@
 import { default as path } from './src/path';
+export { path };
+
 export {
   isWindows,
   pathJoin,
@@ -9,6 +11,7 @@ export {
   initializeFile,
   getDirectoryBy,
 } from './src/path';
+
 export { readInput } from './src/readInput/readInput';
 export { Color } from './src/color';
 export { runOtherCode, RunOtherCodeParam } from './src/runOtherCode';
@@ -38,6 +41,8 @@ export {
   readFileToJsonSync,
   fileExist,
   writeJsonFile,
+  dirEmpty,
 } from './src/file';
 
-export { path };
+import { default as file } from './src/file';
+export { file };
