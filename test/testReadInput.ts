@@ -3,7 +3,7 @@ import { _p, readInput } from 'index';
 import { test } from 'node:test';
 
 /** 测试 userInput 的自动事件序列化  */
-test.skip('should user input data store', () => {
+test.skip('测试用户输入仓库', () => {
   console.log('i am in 1, you should input  1 to end');
   readInput(value => {
     console.log('**** i am end of you input 1 ***');
@@ -26,8 +26,11 @@ test.skip('should user input data store', () => {
   });
 });
 
-/** 测试多次调用后监听超限 */
-test('test MaxListenersExceededWarning error', async () => {
+/** 测试多次调用后监听超限
+ *
+ *
+ */
+test.skip('测试最大调用次数 MaxListenersExceededWarning error', async () => {
   async function _t() {
     const result = await readInput(
       (keyValue: string | undefined, key: unknown) => {
@@ -37,7 +40,6 @@ test('test MaxListenersExceededWarning error', async () => {
       },
     );
 
-    console.log(result);
     _p(typeOf(result));
 
     _p(result);

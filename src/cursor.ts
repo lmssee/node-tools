@@ -1,47 +1,13 @@
-import { typeOf } from 'a-js-tools';
 import { createInterface } from 'node:readline';
+import { _p } from './print';
 
 /** 一个转义码  */
 const t = '\u001B[',
   { stdout, stdin } = process;
 
-/** 打印文本内容  */
-function _p(r: unknown, lineFeed: boolean = true): void {
-  const typeOfR = typeof r;
-  if (
-    typeOfR === 'string' ||
-    typeOfR === 'number' ||
-    typeOfR === 'bigint' ||
-    typeOfR === 'boolean' ||
-    typeOfR === 'undefined' ||
-    typeOfR === 'function' ||
-    typeOf(r) == 'null'
-  ) {
-    // 当为非 null 的基础类型数据
-    stdout.write(`${r}`);
-  } else {
-    // 当为其他类型的数据使用  `JSON.stringify()` 进行转化
-    stdout.write(
-      JSON.stringify(
-        r,
-        (key: string, value: unknown) => {
-          const value_type = typeOf(value);
-          if (value_type == 'function') {
-            return `${value}`;
-          } else if (value == undefined) {
-            return 'undefined';
-          }
-          return value;
-        },
-        2,
-      ),
-    );
-  }
-  lineFeed && stdout.write('\n');
-}
-
 /*** 打印转义的内容  */
 const __p = (r: string | number) => _p(`${t}${r}`, false);
+
 /** Cursor is hidden at the terminal
  *
  * 光标在终端进行隐藏
@@ -132,7 +98,6 @@ const cursorMoveRight = (numberOfRightShifts: number = 1) =>
 export {
   t,
   __p,
-  _p,
   cursorAfterClear,
   cursorHide,
   cursorShow,

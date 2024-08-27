@@ -1,7 +1,8 @@
 import { spawn } from 'node:child_process';
-import { t, typeOf } from 'a-js-tools';
+import { getRandomInt, t, typeOf } from 'a-js-tools';
 import { isWindows, pathJoin } from './path';
-import { _p, cursorAfterClear, cursorHide, cursorShow } from './cursor';
+import { cursorAfterClear, cursorHide, cursorShow } from './cursor';
+import { _p } from './print';
 /** Parameter types for `runOtherCode`
  *
  * 执行其他代码的参数类型
@@ -23,30 +24,43 @@ type RunOtherCodeParam =
        * 是否隐藏等待
        */
       hideWaiting?: boolean;
-      /** The waiting prompt text defaults to "请稍等"
+      /** The waiting prompt text defaults to ""
        *
-       * 等待的提示文本，默认为 "请等待"
+       * 等待的提示文本，默认为 ""
        */
       waitingMessage?: string;
+      /** Whether to proactively print date information
+       *
+       * 是否主动打印日志信息
+       */
+      printLog?: boolean;
       /** Callback function
        *
        * 回调函数
        */
-      callBack?: () => 2;
+      callBack?: () => undefined;
     }
   | string;
 
-/** Execute other commands
- *  执行其他的命令
- * The exec of `child_process` used here creates a child thread
+/** Execute other commands\
+ *  执行其他的命令\
+ * The exec of `child_process` used here creates a child thread\
  *  这里使用的  `child_process` 的 exec 创建子线程
- *   ```js
+ *  - code            {@link String}  执行的具体代码。必须参数，缺省时执行设定工作目录下的
+ *  - cwd             {@link String}  执行环境（执行的目录）。可选参数，缺省时为当前执行目录
+ *  - hideWaiting     {@link Boolean} 隐藏等待提示。可选参数，缺省为 false
+ *  - waitingMessage  {@link String}  等待提示文本。
+ *  - printLog        {@link Boolean} 是否打印日志信息
+ *
+ *
+ *   ```ts
  *          import { runOtherCode } from  "ismi-node-tools";
  *          runOtherCode({
  *                  code:"ls",
- *                  pwd : "../",
+ *                  cwd : "../",
  *                  hideWaiting: true,
- *                  waitingMessage:"请稍等",
+ *                  waitingMessage: 'please wait a moment',
+ *                  printLog: true,
  *          }).then((resolve)=>{
  *              console.log(resolve);
  *          });
@@ -67,16 +81,10 @@ type RunOtherCodeParam =
  *
  * @param param {@link RunOtherCodeParam}  { code:string , cwd: string, callback:()=> void}
  *            执行的 shell 代码
- * @returns     return a  Promise
- *              返回一个 {@link Promise}
- *
- *
- *  返回值包含执行的信息。
- *
+ * @returns     return a  {@link Promise} \
+ *              返回一个 {@link Promise} \
+ *  返回值包含执行的信息。\
  *  如果是串行执行，那么结果的话可能就是一个奇特的大字符串
- *
- *
- *
  */
 function runOtherCode(param: RunOtherCodeParam): Promise<{
   error: undefined | string | unknown;
@@ -88,28 +96,45 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
     count: 0,
     timeStamp: setTimeout(() => 1),
   };
-  typeof param == 'string' && (param = { code: param });
+
+  /// 倘若传入的实参是一个字符串，则默认仅传入
+  if (typeof param == 'string') {
+    param = { code: param };
+  }
+
+  /// 混合值，将实参进行整理
   const template = Object.assign(
     {
       cwd: '',
       hideWaiting: false,
-      waitingMessage: '请稍等',
+      waitingMessage: '',
+      printLog: true,
     },
     param,
   );
-  const { code, callBack, hideWaiting, waitingMessage } = template;
+  const { code, callBack, hideWaiting, waitingMessage, printLog } = template;
   let { cwd } = template;
   /** 打印请稍等。。。 */
   if (!hideWaiting) {
+    /** 随机出一个待渲染列队 */
+    const pList: string[] = [
+      ['.', '..', '...', '....', '...', '..'],
+      ['···', '⋱', '⋮', '⋰'],
+      ['⤯', '⤰', '⤮', '⤩', '⤪', '⤧', '⤨'],
+    ][getRandomInt(2)];
+    /** 随机出的等待标志符数组的长度 */
+    const pLength: number = pList.length;
     /// 隐藏光标
     cursorHide();
+    // 放置一个在进程结束时展示光标，即便在测试发现异步操作会阻塞该事件的触发
+    process.on('exit', cursorShow);
     /// 心跳打印 '请稍等'
     aSettingRollup.timeStamp = setInterval(() => {
       // 清理光标后内容
       cursorAfterClear();
       // 打印文本
       _p(
-        `\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % 6)}${t}20D${t}1A`,
+        `\n${waitingMessage}${'.'.repeat(++aSettingRollup.count % pLength)}${t}20D${t}1A`,
         false,
       );
     }, 100);
@@ -153,7 +178,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         // 清理光标后内容
         cursorAfterClear();
         // 打印文本
-        _p(_data);
+        printLog && _p(_data);
         stderrData += _data;
       });
       /// 出现错误
@@ -165,7 +190,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
         // 清理光标后内容
         cursorAfterClear();
         // 打印文本
-        _p(_data);
+        printLog && _p(_data);
       });
       /// 子进程关闭事件
       childProcess.on('close', () => {
@@ -173,8 +198,11 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
           if (callBack && typeOf(callBack) == 'function') {
             Reflect.apply(callBack, null, []);
           }
+          /// 清理定时器
           clearInterval(aSettingRollup.timeStamp);
+          /// 清理光标后的内容，避免出现打印残留
           cursorAfterClear();
+          /// 返回之前将光标展示出来
           cursorShow();
           resolve({ success, data: stdoutData, error: stderrData });
         }, 100);
@@ -186,6 +214,7 @@ function runOtherCode(param: RunOtherCodeParam): Promise<{
     cursorAfterClear();
     _p('catch error'.concat((error as string).toString()));
     return new Promise(resolve => {
+      /// 在返回值之前展示光标
       cursorShow();
       resolve({ error, data: undefined, success: false });
     });
